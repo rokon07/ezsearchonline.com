@@ -10,9 +10,16 @@
 }
 
 #searchBar{
-	display: block;
-  margin-left: auto;
-  margin-right: auto;
-  height: 20px;
+  	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+  	text-align: center;  
+  	font-family: arial;	
 
+}
+
+#searchButton{
+	margin-top: 10px;
+	margin-left: 10px;
+	width:60px; height:50px;
 }
