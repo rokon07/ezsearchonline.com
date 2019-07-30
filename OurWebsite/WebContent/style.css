@@ -24,14 +24,14 @@
 	margin-bottom: : auto;
 	text-align: center;
 	font-family: arial;
+	transition: 0.4s;
 }
 
-/* hover amination option
+#searchBar: hovver > #searchButton{
 margin-top: 10px;
 margin-left: 10px;
-width:60px; height:50px;
+width:700px; height:40px;
 }
-*/
 
 #searchButton{
 	margin-top: 5px;
@@ -48,6 +48,3 @@ width:60px; height:50px;
 input[type=checkbox], input[type=radio] { /*checkboxs padding*/
 	margin: 30px 3px 10px 20px !important;
 }
-
-/*woekowe*/
-/*owdko*/
