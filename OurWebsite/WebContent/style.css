@@ -6,15 +6,25 @@
   	width: 40%;;
 	width: 400px;
 	height: 150px;
-	
+
+}
+
+.Intro{
+	color: black;
+	font-size: 16px;
+	text-align: center;
+	margin: 30px 0px 30px 0px;
+
 }
 
 #searchBar{
   	display: block;
   	margin-left: auto;
   	margin-right: auto;
-  	text-align: center;  
-  	font-family: arial;	
+		margin-top: auto;
+  	margin-bottom: : auto;
+  	text-align: center;
+  	font-family: arial;
 
 }
 
@@ -24,11 +34,12 @@
 	width:60px; height:50px;
 }
 
-#storeButtons{
+#storeButtons{ /* style for different vendor buttons*/
 	text-align: center;
 	color: black;
 	margin-right: 30px;
 }
-input[type=checkbox], input[type=radio] {
-	margin: 10px 3px 10px 20px !important;
+
+input[type=checkbox], input[type=radio] { /*checkboxs padding*/
+	margin: 30px 3px 10px 20px !important;
 }
