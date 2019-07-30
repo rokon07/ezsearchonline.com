@@ -23,3 +23,12 @@
 	margin-left: 10px;
 	width:60px; height:50px;
 }
+
+#storeButtons{
+	text-align: center;
+	color: black;
+	margin-right: 30px;
+}
+input[type=checkbox], input[type=radio] {
+	margin: 10px 3px 10px 20px !important;
+}
