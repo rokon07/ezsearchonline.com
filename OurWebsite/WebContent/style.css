@@ -1,3 +1,8 @@
+*{
+		margin: 0px;
+		padding: 0px;
+}
+
 #mainlogo{
 	display: block;
 	margin-top: 150px;;
@@ -27,7 +32,7 @@
 	transition: 0.4s;
 }
 
-#searchBar: hovver > #searchButton{
+#searchBar: hover > #searchButton{
 margin-top: 10px;
 margin-left: 10px;
 width:700px; height:40px;
@@ -47,4 +52,21 @@ width:700px; height:40px;
 
 input[type=checkbox], input[type=radio] { /*checkboxs padding*/
 	margin: 30px 3px 10px 20px !important;
+}
+
+#sidebar{
+	position: fixed;
+	width: 280px;
+	height: 100%;
+	background: #151719;
+	color: white;
+	font-size: 14px;
+	padding-left: 10px;
+}
+
+#sidebar ul li {
+	color: rgba(230, 230, 230, 0.9);
+	list-style: none;
+	padding: 15px 10px 15px 10px;
+	border-bottom: 1px solid rgba(100, 100, 100, 0.3);
 }
