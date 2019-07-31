@@ -15,11 +15,8 @@ body{
 }
 
 .topBar{
-	margin-top: 15px;
-	margin-left: 15px;
-	margin-right: 15px;
-
-	height: 57px;
+	margin: 15px;
+	height: 80px;
 	top: 0px;
 	background: #ffff;
 	margin-bottom: 15px;
@@ -27,11 +24,11 @@ body{
 }
 
 #searchBar{
+	position: fixed;
 	margin-top: 10px;
 	margin-left: 10px;
 	display: inline-flex;
 	width: 80%;
-	text-align: center;
 	font-family: arial;
 }
 
@@ -62,4 +59,35 @@ input[type=checkbox], input[type=radio] { /*checkboxs padding*/
 	list-style: none;
 	padding: 10px 10px;
 	border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+.grid-container{
+ margin-left: 300px;
+}
+
+.grid-item{
+	border: 2px solid grey;
+  border-radius: 10px;
+	border-color: grey;
+	height: 500px;
+	width: 420px;
+	display: inline-flex;
+	margin: 10px;
+}
+
+.itemImages{
+	text-align: center;
+	height: 70%;
+	width: auto;
+}
+
+#h1{
+	text-align: center;
+	font-size: 30px;
+}
+
+footer{
+	height: 150px;
+	width: 100%
+	background-color: white;
 }
