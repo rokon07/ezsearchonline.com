@@ -1,0 +1,65 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+
+body{
+	background-color: #f1f3f4;
+}
+
+#mainlogo{
+	display: block;
+	width: 40%;;
+	width: 160px;
+	height: 60px;
+}
+
+.topBar{
+	margin-top: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+
+	height: 57px;
+	top: 0px;
+	background: #ffff;
+	margin-bottom: 15px;
+	border-bottom: 2px solid grey;
+}
+
+#searchBar{
+	margin-top: 10px;
+	margin-left: 10px;
+	display: inline-flex;
+	width: 80%;
+	text-align: center;
+	font-family: arial;
+}
+
+#searchButton{
+	margin-top: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	width:60px; height:40px;
+}
+
+#storeButtons{ /* style for different vendor buttons*/
+	color: black;
+}
+
+input[type=checkbox], input[type=radio] { /*checkboxs padding*/
+	margin: 10px 3px 10px 15px !important;
+}
+
+#sideBar{
+	position: fixed;
+	width: 280px;
+	height: 100%;
+	background: #151719;
+}
+
+#sideBar ul li{
+	color: rgba(230, 230, 230, 0.9);
+	list-style: none;
+	padding: 10px 10px;
+	border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
