@@ -1,0 +1,49 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+#mainlogo{
+	display: block;
+	margin-top: 10px;
+	margin-left: 10px;
+	width: 40%;;
+	width: 160px;
+	height: 60px;
+}
+
+header{
+	margin: 20px 20px 20px 20px !important;
+}
+#searchBar{
+	text-align: center;
+	font-family: arial;
+}
+
+#searchButton{
+	margin-top: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	width:60px; height:40px;
+}
+
+#storeButtons{ /* style for different vendor buttons*/
+	color: black;
+}
+
+input[type=checkbox], input[type=radio] { /*checkboxs padding*/
+	margin: 10px 3px 10px 15px !important;
+}
+
+#sideBar{
+	position: fixed;
+	width: 280px;
+	height: 100%;
+	background: #151719;
+}
+
+#sideBar ul li{
+	color: rgba(230, 230, 230, 0.9);
+	list-style: none;
+	padding: 10px 10px;
+	border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
