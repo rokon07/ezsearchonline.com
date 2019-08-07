@@ -28,7 +28,8 @@
 			function enterPressed(e) {
 				var keycode = (e.keyCode ? e.keyCode : e.which);
 				if(keycode=='13') {
-					location.href = "searchPage.html";
+					let searchTerm= document.getElementById("box").value;
+					location.href = "searchPage.html" +"?"+searchTerm;
 				}
 			}
 		</script>
