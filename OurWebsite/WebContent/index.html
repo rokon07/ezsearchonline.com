@@ -21,8 +21,17 @@
 
 
 	<div id="searchBar">
-		<input type="text" placeholder="  Search for an Item ..." name="search"
+		<input id="box" type="search" placeholder="  Search for an Item ..." onkeypress="enterPressed(event)"
 		style="width:700px; height:40px;"/>
+		<script>
+			//script for redirecting to search result wiht 'enter' key pressed
+			function enterPressed(e) {
+				var keycode = (e.keyCode ? e.keyCode : e.which);
+				if(keycode=='13') {
+					location.href = "searchPage.html";
+				}
+			}
+		</script>
 		<button id="searchButton" type="submit"
 		<i class="glyphicon glyphicon-search"></i>
 	</button>
