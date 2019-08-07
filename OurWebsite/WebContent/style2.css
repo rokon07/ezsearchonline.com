@@ -1,4 +1,5 @@
 *{
+	font-family: work-sans;
 	margin: 0px;
 	padding: 0px;
 }
@@ -55,8 +56,9 @@ input[type=checkbox], input[type=radio] { /*checkboxs padding*/
 }
 
 .grid-container{
-	padding-top: 120px;
-	padding-left: 300px;
+	padding-top: 110px;
+	padding-left: 295px;
+	display: flex; flex-wrap: wrap; /*Fixed boxes */
 
 }
 
@@ -64,30 +66,31 @@ input[type=checkbox], input[type=radio] { /*checkboxs padding*/
 	border: 2px solid grey;
   border-radius: 10px;
 	border-color: grey;
-	display: inline-block;
-	margin: 15px;
-	width: 300px;
+	margin: 10px;
+	width: 320px;
 	height: 450px;
 	text-align: center;
+	cursor: pointer;
 }
 
-.grid-item .itemImages{
-	margin-top: -30px;
-	height: 70%;
+.itemImages{
+	object-fit: scale-down;
+	height: 50%;
 	width: auto;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
-.grid-item .imgText{
-	padding-top: 20px;
-	display: block;
+.imgText{
 	height: 100px;
 	font-size: 15px;
+	padding: 10px;
+
 }
 
 .footer{
-	height: 150px;
-	width: 100%
 	text-align: right;
-	padding-top: 100px;
-	padding-right: 50px;
+	background: orange;
+	height: 100px;
+	width: 100%
 }
