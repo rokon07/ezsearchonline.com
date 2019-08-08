@@ -27913,7 +27913,11 @@
               }
             }
             //file.write(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-            searchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
+            if(i!=items.length-1){
+              searchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
+            }else {
+              searchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
+            }
           }
           var allResult = '';
           for (let i = 0; i < searchResult.length; i++) {
@@ -27923,6 +27927,10 @@
           showResult.show(allResult);
         });
       }
+
+
+
+
     }
   },{"./showResult":331,"cheerio":36,"node-fetch":300}],331:[function(require,module,exports){
     exports.show= function(allresult) {
@@ -27966,8 +27974,19 @@
 
         node.appendChild(textNode);
 
+       let button=document.createElement("BUTTON");
+        button.className="gotoLink";
+        button.addEventListener ("click", function() {
+          location.href=pLink;
+        });
 
-        node.appendChild(textNode);
+        let websiteImg= document.createElement("IMG");
+        websiteImg.src="ebay-logo.png";
+        button.appendChild(websiteImg);
+
+        node.appendChild(button);
+
+
 
 
         document.getElementById("grid-result").appendChild(node);
