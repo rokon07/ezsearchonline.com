@@ -1,6 +1,8 @@
 *{
+		font-family: work-sans;
 		margin: 0px;
 		padding: 0px;
+		font-family: work-sans;
 }
 
 #mainlogo{
@@ -69,4 +71,23 @@ input[type=checkbox], input[type=radio] { /*checkboxs padding*/
 	list-style: none;
 	padding: 15px 10px 15px 10px;
 	border-bottom: 1px solid rgba(100, 100, 100, 0.3);
+}
+
+input[type=checkbox]
+{
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(1.3); /* IE */
+    -moz-transform: scale(1.3); /* FF */
+    -webkit-transform: scale(1.3); /* Safari and Chrome */
+    -o-transform: scale(1.3); /* Opera */
+    transform: scale(1.3);
+}
+
+footer{
+	position: fixed;
+	left: -10px;
+	bottom: 10px;
+	width: 100%;
+	color: black;
+	text-align: right;
 }

@@ -15,10 +15,12 @@
 	<title>"page2"</title>
 </header>
 
-<div class="topBar" style="height: 100px; width: 100%;">
+<div class="topBar" style="height: 100px; width: 100%; ">
 	<img class="mainlogo" src="logo.png" alt="logo">
-	<input id="box" type="text" placeholder="	Search for an Item ..." name="search" onkeypress="enterPressed(event)"
-		   style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 25px; margin-left: 100px;"/>
+	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 28px; margin-left: 50px; display: inline;">
+		<img src="searchLogo.png" style="height: 22px; width: auto; margin-left: 10px; margin-right: 5px; margin-bottom: 2px;"/>
+	<input id="box" type="text" placeholder="Search for an Item ..." name="search" onkeypress="enterPressed(event)"
+		   style="font-family: work-sans; border: 0px; width:720px; height:36px; display: inline;"/>
 	<script>
 		//script for redirecting to search result wiht 'enter' key pressed
 		function enterPressed(e) {
@@ -29,6 +31,7 @@
 			}
 		}
 	</script>
+	</div>
 </div>
 <!------------------------------------------------sideBar-------------------------------------->
 <body onload="scrape()">
@@ -66,4 +69,22 @@
 	</div>-->
 </div>
 </body>
+
+<button onclick="topFunction()" id="myBtn" title="Go to top"><img src="up.png" style="height: 20px; width: auto;"></button>
+<script>
+window.onscroll = function() {scrollFunction()};
+function scrollFunction() {
+	if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+		document.getElementById("myBtn").style.display = "block";
+	} else {
+		document.getElementById("myBtn").style.display = "none";
+	}
+}
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+	document.body.scrollTop = 0; // For Safari
+	document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+}
+</script>
+
 </html>
