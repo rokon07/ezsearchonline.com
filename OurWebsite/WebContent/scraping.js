@@ -3,19 +3,43 @@ const fetch= require('node-fetch');
 const cheerio= require('cheerio');
 const fs= require('fs');
 
-var searchTitle='mens college bag';
+var searchTitle='laptop';
 searchTitle=searchTitle.replace(/ /gi, '+')
-console.log(searchTitle);
 //const url='https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.Xiphone+x+new.TRS1&_nkw=iphone+x+new&_sacat=0';
-const serachurl='https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.'+searchTitle+'.TRS1&_nkw='+searchTitle+'&_sacat=0';
 
+//Microcenter: put search term where it says gamingheadset
+const searchurl='https://www.microcenter.com/search/search_results.aspx?Ntt=gamingheadset&searchButton=search';
 
 //const urlList = [];
 //const itemDetail = [];
-var file=fs.createWriteStream('output.txt');
+var file = fs.createWriteStream('output.txt');
+function micro(url) {
+    const result = fetch(`${url}`).then(response => response.text());
+    result.then(body => {
+        const $= cheerio.load(body);
+        const items=$('#productGrid').children().eq(3).children('.product_wrapper');
+        for(var j= -35; j<=items.length;j++) {
+            const Plink = items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
+            const Pname = items.children().eq(j).children().eq(1).attr('data-name');
+            const Pprice = items.children().eq(j).children().eq(1).attr('data-price');
+            const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
+            //link
+            if (Plink != "undefined" || Pname != "undefined" || Pprice != "undefined" || Pimg != "undefined") {
+            console.log(Pname);
+            console.log(Pprice);
+            console.log(Pimg);
+            console.log(Plink);
+            }
+                if(Plink != "undefined" || Pprice != "undefined" || Pimg != "undefined" || Pname != "undefined"){
+                    file.write(Pimg + ' | ' + Pname + ' | ' + "New" + ' | ' + '$' + Pprice + ' | ' + Plink + '\n');
+            }
+        }
+    });
+}
+micro(searchurl);
 
-//ebay(url);
-ebay(serachurl);
+//ebay(url)
+//ebay(searchurl);
 
 function ebay(url){
     const result=fetch(`${url}`).then(response => response.text());
@@ -45,8 +69,6 @@ function ebay(url){
         }
     });
 }
-
-
 
 //gets the html of the page
 /*const result=fetch(`${url}`).then(response => response.text());
