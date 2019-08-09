@@ -102,23 +102,21 @@ input[type=checkbox]
 .gotoLink{
     margin-top: 40px;
     border-radius: 10px;
-    color: white;
-    transition: 0.3s
 }
 
-.gotoLink:hover {opacity: 1}
-
 .gotoLink img{
-    width: 100px;
-    height: 40px;
+    width: 80px;
+    height: auto;
+		padding: 5px;
 }
 
 .footer{
     margin-top: 10px;
+		margin-left: -15px;
     padding-top: 10px;
     padding-right: 10px;
     height: 80px;
-    width: 100%;
+    width: 105%;
     text-align: right;
     background:	#ff8c00;
     color: white;
