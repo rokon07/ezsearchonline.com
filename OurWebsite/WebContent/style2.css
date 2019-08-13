@@ -83,13 +83,14 @@ input[type=checkbox]
     height: 450px;
     text-align: center;
     cursor: pointer;
-    box-shadow: 5px 10px 8px #888888;
+
 }
 
 .grid-item:hover{
-  -ms-transform: scale(1.03); /* IE 9 */
-  -webkit-transform: scale(1.03); /* Safari 3-8 */
-  transform: scale(1.03);
+    -ms-transform: scale(1.03); /* IE 9 */
+    -webkit-transform: scale(1.03); /* Safari 3-8 */
+    transform: scale(1.03);
+    box-shadow: 5px 10px 8px #888888;
 }
 
 .itemImages{
@@ -115,12 +116,12 @@ input[type=checkbox]
 .gotoLink img{
     width: 80px;
     height: auto;
-		padding: 5px;
+    padding: 5px;
 }
 
 .footer{
     margin-top: 10px;
-		margin-left: -15px;
+    margin-left: -15px;
     padding-top: 70px;
     padding-right: 10px;
     height: 100px;
@@ -131,21 +132,21 @@ input[type=checkbox]
 }
 
 #myBtn {
-  display: none; /* Hidden by default */
-  position: fixed; /* Fixed/sticky position */
-  bottom: 25px; /* Place the button at the bottom of the page */
-  right: 25px; /* Place the button 30px from the right */
-  z-index: 99; /* Make sure it does not overlap */
-  border: none; /* Remove borders */
-  outline: none; /* Remove outline */
-  background-color: #ff8c00; /* Set a background color */
-  color: white; /* Text color */
-  cursor: pointer; /* Add a mouse pointer on hover */
-  padding: 10px; /* Some padding */
-  border-radius: 60px; /* Rounded corners */
-  box-shadow: 5px 10px 8px #888888;
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 25px; /* Place the button at the bottom of the page */
+    right: 25px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: #ff8c00; /* Set a background color */
+    color: white; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding: 10px; /* Some padding */
+    border-radius: 60px; /* Rounded corners */
+    box-shadow: 5px 10px 8px #888888;
 }
 
 #myBtn:hover {
-  background-color: #555; /* Add a dark-grey background on hover */
+    background-color: #555; /* Add a dark-grey background on hover */
 }
