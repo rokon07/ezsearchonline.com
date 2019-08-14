@@ -8907,7 +8907,7 @@ var attributeRules = {
 		if(len === 0){
 			return falseFunc;
 		}
-		
+
 		if(data.ignoreCase){
 			value = value.toLowerCase();
 
@@ -10277,7 +10277,7 @@ DomHandler.prototype.onerror = function(error){
 
 DomHandler.prototype.onclosetag = function(){
 	//if(this._tagStack.pop().name !== name) this._handleCallback(Error("Tagname didn't match!"));
-	
+
 	var elem = this._tagStack.pop();
 
 	if(this._options.withEndIndices && elem){
@@ -10822,7 +10822,7 @@ exports.prepend = function(elem, prev){
 	if(elem.prev){
 		elem.prev.next = prev;
 	}
-	
+
 	prev.parent = parent;
 	prev.prev = elem.prev;
 	prev.next = elem;
@@ -11579,7 +11579,7 @@ Parser.prototype.onclosetag = function(name) {
     if (this._lowerCaseTagNames) {
         name = name.toLowerCase();
     }
-    
+
     if (name in foreignContextElements || name in htmlIntegrationElements) {
         this._foreignContext.pop();
     }
@@ -11628,7 +11628,7 @@ Parser.prototype._closeCurrentTag = function() {
             this._cbs.onclosetag(name);
         }
         this._stack.pop();
-        
+
     }
 };
 
@@ -28108,6 +28108,8 @@ window.scrape=function() {
     let newEggSearchResult= [];
     let microCenterSearchResult=[];
 
+    var x = document.getElementById("myCheck").checked;
+
     ebay(ebayUrl);
     //newegg(newEggUrl);
     micro(microCenterUrl);
@@ -28211,15 +28213,7 @@ window.scrape=function() {
                 const Pprice = items.children().eq(j).children().eq(1).attr('data-price');
                 const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
                 //link
-                if (Plink != "undefined" || Pname != "undefined" || Pprice != "undefined" || Pimg != "undefined") {
-                    console.log(Pname);
-                    console.log(Pprice);
-                    console.log(Pimg);
-                    console.log(Plink);
-                }
-                if(Plink != "undefined" || Pprice != "undefined" || Pimg != "undefined" || Pname != "undefined"){
-                    microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + "New" + ' | ' + '$' + Pprice + ' | ' + Plink + '\n');
-                }
+                  microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + "New" + ' | ' + '$' + Pprice + ' | ' + Plink + '\n');
             }
 
             var allResult = '';
@@ -28230,9 +28224,6 @@ window.scrape=function() {
             showResult.show(allResult, 'microcenter');
         });
     }
-
-
-
 
 }
 
@@ -28269,7 +28260,8 @@ exports.show= function(allresult, website) {
 
         let price = document.createElement("P");
         let PriceText = document.createTextNode(pPrice);
-        price.appendChild(PriceText);
+        txtBold.appendChild(PriceText);
+        //price.appendChild(PriceText);
         textNode.appendChild(price);
 
         let link = document.createElement("A");
@@ -28293,7 +28285,7 @@ exports.show= function(allresult, website) {
                 websiteImg.src="newEgg-logo.png";
                 break;
             case 'microcenter' :
-                websiteImg.src="microcenter-logo.png";
+                websiteImg.src="microcenterlogo.png";
         }
         //websiteImg.src="ebay-logo.png";
         button.appendChild(websiteImg);
@@ -28307,24 +28299,26 @@ exports.show= function(allresult, website) {
 
 
     }
-
+    console.log(eachLine);
     for (let index = 0; index < eachLine.length; index++) {
         let productInfo = eachLine[index].split("|")
+        if(productInfo!=""){
         let pImg = productInfo[0];
         let pName = productInfo[1];
         let pCondition = productInfo[2];
         let pPrice = productInfo[3];
         let pLink = productInfo[4];
         putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink);
+      }
 
 
     }
 
-    let footer = document.createElement('DIV');
+    /*let footer = document.createElement('DIV');
     footer.className = "footer";
     let footerText = document.createTextNode("© Mohd Rokon / Touhid Nuhash");
     footer.appendChild(footerText);
-    document.getElementById("grid-result").appendChild(footer);
+    document.getElementById("grid-result").appendChild(footer);*/
 
 }
 },{}]},{},[330]);
