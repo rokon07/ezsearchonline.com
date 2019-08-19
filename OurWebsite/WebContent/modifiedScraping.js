@@ -8907,7 +8907,7 @@ var attributeRules = {
 		if(len === 0){
 			return falseFunc;
 		}
-
+		
 		if(data.ignoreCase){
 			value = value.toLowerCase();
 
@@ -10277,7 +10277,7 @@ DomHandler.prototype.onerror = function(error){
 
 DomHandler.prototype.onclosetag = function(){
 	//if(this._tagStack.pop().name !== name) this._handleCallback(Error("Tagname didn't match!"));
-
+	
 	var elem = this._tagStack.pop();
 
 	if(this._options.withEndIndices && elem){
@@ -10822,7 +10822,7 @@ exports.prepend = function(elem, prev){
 	if(elem.prev){
 		elem.prev.next = prev;
 	}
-
+	
 	prev.parent = parent;
 	prev.prev = elem.prev;
 	prev.next = elem;
@@ -11579,7 +11579,7 @@ Parser.prototype.onclosetag = function(name) {
     if (this._lowerCaseTagNames) {
         name = name.toLowerCase();
     }
-
+    
     if (name in foreignContextElements || name in htmlIntegrationElements) {
         this._foreignContext.pop();
     }
@@ -11628,7 +11628,7 @@ Parser.prototype._closeCurrentTag = function() {
             this._cbs.onclosetag(name);
         }
         this._stack.pop();
-
+        
     }
 };
 
@@ -28081,38 +28081,71 @@ function aliExpress(url) {
     }
 
 }*/
-
-window.scrape=function() {
+window.scrape= function () {
     const fetch = require('node-fetch');
     const cheerio = require('cheerio');
     const showResult = require('./showResult');
 
-    let search=window.location.href;
-    let temp=search.toString().split("?");
-    let ebaySearchTitle=temp[1].replace(/%20/gi, '+');
-    let searchBarText= temp[1].replace(/%20/gi, ' ');
+    let search = window.location.href; //get the url
+
+    let temp = search.toString().split("?"); //splits the url to extract info
+    let sTerm = temp[1].split("&"); //get splits the searcgtitle and website [0]=searchtitle, [1]=websites
+
+    let ebaySearchTitle = sTerm[0].replace(/%20/gi, '+');
+    let searchBarText = sTerm[0].replace(/%20/gi, ' ');
 
     document.getElementById("box").setAttribute("value", searchBarText);
+
+    console.log(sTerm[1]);
+    let checkedWebsites = sTerm[1].split("+");
+    console.log(checkedWebsites);
+
+    for (let i = 0; i < checkedWebsites.length; i++) {
+        switch (checkedWebsites[i]) {
+            case "Ebay":
+                document.getElementById("ebay").setAttribute("checked", "checked");
+                break;
+            case "MicroCenter":
+                document.getElementById("microcenter").setAttribute("checked", "checked");
+                break;
+            case "Craigslist":
+                document.getElementById("craigslist").setAttribute("checked", "checked");
+                break;
+            case "walmart":
+                document.getElementById("walmart").setAttribute("checked", "checked");
+                break;
+        }
+        ;
+    }
 
     console.log(ebaySearchTitle);
     //const url='https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.Xiphone+x+new.TRS1&_nkw=iphone+x+new&_sacat=0';
     const ebayUrl = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.' + ebaySearchTitle + '.TRS1&_nkw=' + ebaySearchTitle + '&_sacat=0';
-    const newEggUrl = 'https://www.newegg.com/p/pl?d='+ ebaySearchTitle +'&PageSize=96';
-    const microCenterUrl='https://www.microcenter.com/search/search_results.aspx?Ntt='+ebaySearchTitle+'&searchButton=search'
-
-
+    const microCenterUrl = 'https://www.microcenter.com/search/search_results.aspx?Ntt=' + ebaySearchTitle + '&searchButton=search';
+    const craigslistUrl = 'https://washingtondc.craigslist.org/search/sss?query=' + ebaySearchTitle + '&sort=rel';
+    const walmartUrl='https://www.walmart.com/search/?cat_id=0&query='+ebaySearchTitle;
 
 
     //var file=fs.createWriteStream('output.txt');
     let ebaySearchResult = [];
-    let newEggSearchResult= [];
-    let microCenterSearchResult=[];
+    //let newEggSearchResult= [];
+    let microCenterSearchResult = [];
+    let craiglistSearchResult = [];
+    let walmartSearchResult= [];
 
-    var x = document.getElementById("myCheck").checked;
+    if (document.getElementById("ebay").checked) {
+        ebay(ebayUrl);
+    }
+    if (document.getElementById("microcenter").checked) {
+        micro(microCenterUrl);
+    }
+    if (document.getElementById("craigslist").checked) {
+        craigslist(craigslistUrl);
+    }
+    if (document.getElementById("walmart").checked) {
+        walmart(walmartUrl);
+    }
 
-    ebay(ebayUrl);
-    //newegg(newEggUrl);
-    micro(microCenterUrl);
 
     function ebay(url) {
         const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -28136,13 +28169,13 @@ window.scrape=function() {
                 if (price == '') {
                     var price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
                     if (price == '') {
-                        var price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
+                        let price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
                     }
                 }
                 //file.write(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-                if(i!=items.length-1){
+                if (i != items.length - 1) {
                     ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
-                }else {
+                } else {
                     ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
                 }
             }
@@ -28153,67 +28186,22 @@ window.scrape=function() {
 
             showResult.show(allResult, 'ebay');
         });
-    }
 
-    function newegg(url) {
-        const proxyUrl = 'https://crossorigin.me/';
-        const result = fetch(`${proxyUrl+url}`).then(response => response.text());
-        result.then(body => {
-            const $= cheerio.load(body);
-            const items=$('.list-wrap').children().eq(3).children();
-            console.log(items.length);
-
-            for(var i = 0; i < items.length * 2; i+= 2){
-                const itemLink = items.children().eq(i).attr('href');
-                var itemImage = items.children().eq(i).children().eq(1).attr('src');
-                var itemName = items.children().eq(i).children().eq(1).attr('title');
-                itemImage = itemImage.substring(2, itemImage.length);
-                itemName = itemName.substring(0, 60);
-                itemName = itemName.substring(0, Math.min(itemName.length, itemName.lastIndexOf(" ")));
-                //console.log(itemLink)
-                //console.log(itemImage)
-                //console.log(itemName)
-                newEggSearchResult.push(itemImage + ' | ' + itemName + ' | ' + "New" + ' | ' + '$00.00' + ' | ' + itemLink + '\n');
-            }
-            const items2=$('.list-wrap').children().eq(7).children();
-            console.log(items2.length);
-            for(var i = 0; i < items2.length * 2; i+= 2){
-                const itemLink = items2.children().eq(i).attr('href');
-                var itemImage = items2.children().eq(i).children().eq(1).attr('src');
-                var itemName = items2.children().eq(i).children().eq(1).attr('title');
-                itemImage = itemImage.substring(2, itemImage.length);
-                itemName = itemName.substring(0, 60);
-                itemName = itemName.substring(0, Math.min(itemName.length, itemName.lastIndexOf(" ")));
-                //console.log(itemLink)
-                //console.log(itemImage)
-                //console.log(itemName)
-                newEggSearchResult.push(itemImage + ' | ' + itemName + ' | ' + "New" + ' | ' + '$00.00' + ' | ' + itemLink + '\n');
-            }
-
-            var allResult = '';
-            for (let i = 0; i < newEggSearchResult.length; i++) {
-                allResult = allResult.concat(newEggSearchResult[i]);
-            }
-
-            showResult.show(allResult, 'newegg');
-
-
-        });
     }
 
     function micro(url) {
         const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl+url}`).then(response => response.text());
+        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
         result.then(body => {
-            const $= cheerio.load(body);
-            const items=$('#productGrid').children().eq(3).children('.product_wrapper');
-            for(var j= 0; j<items.length * 2; j+= 2) {
-                const Plink = 'https://www.microcenter.com'+items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
+            const $ = cheerio.load(body);
+            const items = $('#productGrid').children().eq(3).children('.product_wrapper');
+            for (var j = 0; j < items.length * 2; j += 2) {
+                const Plink = 'https://www.microcenter.com' + items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
                 const Pname = items.children().eq(j).children().eq(1).attr('data-name');
                 const Pprice = items.children().eq(j).children().eq(1).attr('data-price');
                 const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
                 //link
-                  microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + "New" + ' | ' + '$' + Pprice + ' | ' + Plink + '\n');
+                microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + "New" + ' | ' + '$' + Pprice + ' | ' + Plink + '\n');
             }
 
             var allResult = '';
@@ -28225,13 +28213,146 @@ window.scrape=function() {
         });
     }
 
+    function craigslist(url) {
+        let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+
+        function doCORSRequest(options, printResult) {
+            let x = new XMLHttpRequest();
+            x.open(options.method, cors_api_url + options.url);
+            x.onload = x.onerror = function () {
+                printResult(
+                    options.method + ' ' + options.url + '\n' +
+                    x.status + ' ' + x.statusText + '\n\n' +
+                    (x.responseText || '')
+                );
+            };
+            if (/^POST/i.test(options.method)) {
+                x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            }
+            x.send(options.data);
+        }
+
+        // Bind event
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                const items = $('#sortable-results').children().eq(3).children();
+                if(items.length<50){
+                    const items = $('#sortable-results').children().eq(4).children();
+                }
+                console.log(items.length);
+                for (let i = 0; i < items.length; i++) {
+                    let imgAvail = items.eq(i).children().eq(0).children();
+                    if (imgAvail != 0) {
+                        const pLink = items.eq(i).children().eq(0).attr('href');
+                        let purl = 'https://cors-anywhere.herokuapp.com/';
+                        const result2 = fetch(`${purl + pLink}`).then(response => response.text())
+                        result2.then(body => {
+                            //console.log(body);
+                            const $ = cheerio.load(body);
+                            const pImg = $('.gallery').children().eq(3).children().eq(0).children().eq(0).children().eq(0).attr('src');
+                            const pName = $('#titletextonly').text();
+                            const pPrice = $('.price').text();
+                            const pCondition = 'used';
+                            showResult.show(pImg + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n', 'craigslist');
+
+                        })
+
+                    }
+
+                }
+
+                //showResult.show(allResult, 'craigslist');
+            });
+
+        })();
+    }
+
+    function walmart(url) {
+        let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+
+        function doCORSRequest(options, printResult) {
+            let x = new XMLHttpRequest();
+            x.open(options.method, cors_api_url + options.url);
+            x.onload = x.onerror = function () {
+                printResult(
+                    options.method + ' ' + options.url + '\n' +
+                    x.status + ' ' + x.statusText + '\n\n' +
+                    (x.responseText || '')
+                );
+            };
+            if (/^POST/i.test(options.method)) {
+                x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            }
+            x.send(options.data);
+        }
+
+// Bind event
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                let items= $('#searchContent').html().toString();
+                console.log(items);
+                let temp= items.split('{"productId":');
+                let name=[];
+                for(let i=1; i<temp.length;i++){
+                    let temp2=temp[i].split(',')
+                    if(temp2[3].includes('title')){
+                        name.push(temp2[3]);
+                    }else{
+                        name.push(temp2[2]);
+                    }
+                }
+                console.log(name);
+                /*let items=$('#searchProductResult').children().eq(1).children();
+                console.log(items.length)
+                for(let i=-30; i<48; i++){
+                    let pLink='https://www.walmart.com';
+                    pLink = pLink+items.eq(i).children().eq(0).children().eq(1)
+                        .children().eq(1).children().eq(0).children().eq(1).children().eq(0)
+                        .attr('href');
+
+                    const pImg=items.eq(i).children().eq(0).children().eq(1)
+                        .children().eq(1).children().eq(0).children().eq(1).children().eq(0)
+                        .children().eq(0).attr('src');
+
+                    const pName=items.eq(i).children().eq(0).children().eq(1)
+                        .children().eq(1).children().eq(0).children().eq(1).children().eq(0)
+                        .children().eq(0).attr('alt');
+
+                    const pPrice=items.eq(i).children().eq(0).children().eq(1)
+                        .children().eq(6).children().eq(0).children().eq(0).children().eq(0)
+                        .children('.price-main-block').children().eq(0).children().eq(0)
+                        .children().eq(0).text();
+
+                    const pCondition='New';
+                    console.log(pImg + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n');
+                    //walmartSearchResult.push(pImg + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n');
+                }
+
+                var allResult = '';
+                for (let i = 0; i < walmartSearchResult.length; i++) {
+                    allResult = allResult.concat(walmartSearchResult[i]);
+                }
+
+                showResult.show(allResult, 'walmart');*/
+
+            });
+
+        })();
+    }
+
 }
+
 
 },{"./showResult":331,"cheerio":36,"node-fetch":300}],331:[function(require,module,exports){
 exports.show= function(allresult, website) {
-    //const fs = require('browserify-fs');
-    //let eachLine = fs.readFileSync('output.txt').toString().split("\n");
-
     let eachLine=allresult.split("\n");
 
 
@@ -28260,8 +28381,7 @@ exports.show= function(allresult, website) {
 
         let price = document.createElement("P");
         let PriceText = document.createTextNode(pPrice);
-        txtBold.appendChild(PriceText);
-        //price.appendChild(PriceText);
+        price.appendChild(PriceText);
         textNode.appendChild(price);
 
         let link = document.createElement("A");
@@ -28281,11 +28401,14 @@ exports.show= function(allresult, website) {
             case 'ebay':
                 websiteImg.src="ebay-logo.png";
                 break;
-            case 'newegg':
-                websiteImg.src="newEgg-logo.png";
+            case 'aliexpress':
+                websiteImg.src="aliexpress-logo.png";
                 break;
-            case 'microcenter' :
-                websiteImg.src="microcenterlogo.png";
+            case 'craigslist' :
+                websiteImg.src="craigslist-logo.png";
+                break;
+            case 'walmart' :
+                websiteImg.src="walmart-logo.png";
         }
         //websiteImg.src="ebay-logo.png";
         button.appendChild(websiteImg);
@@ -28299,26 +28422,20 @@ exports.show= function(allresult, website) {
 
 
     }
-    console.log(eachLine);
     for (let index = 0; index < eachLine.length; index++) {
         let productInfo = eachLine[index].split("|")
         if(productInfo!=""){
-        let pImg = productInfo[0];
-        let pName = productInfo[1];
-        let pCondition = productInfo[2];
-        let pPrice = productInfo[3];
-        let pLink = productInfo[4];
-        putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink);
-      }
+            let pImg = productInfo[0];
+            let pName = productInfo[1];
+            let pCondition = productInfo[2];
+            let pPrice = productInfo[3];
+            let pLink = productInfo[4];
+            putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink);
+        }
 
 
     }
 
-    /*let footer = document.createElement('DIV');
-    footer.className = "footer";
-    let footerText = document.createTextNode("© Mohd Rokon / Touhid Nuhash");
-    footer.appendChild(footerText);
-    document.getElementById("grid-result").appendChild(footer);*/
 
 }
 },{}]},{},[330]);

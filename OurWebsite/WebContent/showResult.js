@@ -1,7 +1,4 @@
 exports.show= function(allresult, website) {
-    //const fs = require('browserify-fs');
-    //let eachLine = fs.readFileSync('output.txt').toString().split("\n");
-
     let eachLine=allresult.split("\n");
 
 
@@ -50,11 +47,14 @@ exports.show= function(allresult, website) {
             case 'ebay':
                 websiteImg.src="ebay-logo.png";
                 break;
-            case 'newegg':
-                websiteImg.src="newEgg-logo.png";
+            case 'aliexpress':
+                websiteImg.src="aliexpress-logo.png";
                 break;
-            case 'microcenter' :
-                websiteImg.src="microcenter-logo.png";
+            case 'craigslist' :
+                websiteImg.src="craigslist-logo.png";
+                break;
+            case 'walmart' :
+                websiteImg.src="walmart-logo.png";
         }
         //websiteImg.src="ebay-logo.png";
         button.appendChild(websiteImg);
@@ -68,23 +68,19 @@ exports.show= function(allresult, website) {
 
 
     }
-
     for (let index = 0; index < eachLine.length; index++) {
         let productInfo = eachLine[index].split("|")
-        let pImg = productInfo[0];
-        let pName = productInfo[1];
-        let pCondition = productInfo[2];
-        let pPrice = productInfo[3];
-        let pLink = productInfo[4];
-        putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink);
+        if(productInfo!=""){
+            let pImg = productInfo[0];
+            let pName = productInfo[1];
+            let pCondition = productInfo[2];
+            let pPrice = productInfo[3];
+            let pLink = productInfo[4];
+            putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink);
+        }
 
 
     }
 
-    let footer = document.createElement('DIV');
-    footer.className = "footer";
-    let footerText = document.createTextNode("© Mohd Rokon / Touhid Nuhash");
-    footer.appendChild(footerText);
-    document.getElementById("grid-result").appendChild(footer);
 
 }
