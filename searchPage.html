@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html>
+<header>
+	<link rel="stylesheet" type="text/css" href="style2.css">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://use.typekit.net/omc5vhi.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Font awesome -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="modifiedScraping.js"> </script>
+
+	<title>"page2"</title>
+</header>
+
+<div class="topBar" style="height: 100px; width: 100%; ">
+	<img class="mainlogo" src="logo.png" alt="logo">
+	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 28px; margin-left: 50px; display: inline;">
+		<img src="searchLogo.png" style="height: 22px; width: auto; margin-left: 10px; margin-right: 5px; margin-bottom: 2px;"/>
+		<input id="box" type="text" placeholder="Search for an Item ..." name="search" onkeypress="enterPressed(event)"
+			   style="font-family: work-sans; border: 0px; width:720px; height:36px; display: inline;"/>
+		<script>
+			//script for redirecting to search result wiht 'enter' key pressed
+			function enterPressed(e) {
+				var keycode = (e.keyCode ? e.keyCode : e.which);
+				if(keycode=='13') {
+					/*let searchTerm= document.getElementById("box").value;
+					location.href = "searchPage.html" +"?"+searchTerm;*/
+					let website=document.getElementById("websitelists").children;
+					let webName='';
+					for(let i=1; i<=website.length; i+=2){
+						if(website[i].checked){
+							if(i!=(website.length-1)){
+								webName = webName + website[i].value + "+";
+							}else {
+								webName = webName + website[i].value;
+							}
+						}
+					}
+					//console.log(webName);
+					let searchTerm= document.getElementById("box").value;
+					location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName;
+				}
+			}
+		</script>
+	</div>
+</div>
+<!------------------------------------------------sideBar-------------------------------------->
+<body onload="scrape()">
+<div class="sideBar">
+	<ul>
+		<li>Zip Code:
+			<input type="text" placeholder="  Enter Zip Code ..." name="search"
+				   style="width:170px; height:30px; border: 2px; border-radius: 4px; color: black;"/>
+		</li>
+		<li>Price: <input type="text" placeholder="  Min" name="search"
+						  style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black;"/> to <input type="text" placeholder="  Max" name="search"
+																													  style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black;"/></li>
+		<li id="websitelists">Websites: <br><input id="ebay" type="checkbox" name="website3" value="Ebay"> Ebay </button>
+			<br><input id="craigslist" type="checkbox" name="website2" value="Craigslist"> Craigslist DC </button>
+			<br><input id="microcenter" type="checkbox" name="website4" value="MicroCenter"> Micro Center </button>
+			<br><input id="walmart" type="checkbox" name="website5" value="walmart"> Walmart </button>
+		</li>
+		<button id="refineButton" type="submit" onclick="refineSearch()">Refine Search</button>
+		<script>
+			function refineSearch() {
+					let website=document.getElementById("websitelists").children;
+					let webName='';
+					for(let i=1; i<=website.length; i+=2){
+						if(website[i].checked){
+							if(i!=(website.length-1)){
+								webName = webName + website[i].value + "+";
+							}else {
+								webName = webName + website[i].value;
+							}
+						}
+					}
+
+				let searchTerm= document.getElementById("box").value;
+				location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName;
+			}
+		</script>
+	</ul>
+</div>
+
+<div id= "grid-result" class="grid-container">
+	<!--<div class="grid-item">
+		<img id="imgLink" src="phone.png" class="itemImages">
+		<div class="imgText">
+			<p id="productname">iPhone 6</p>
+			<p>Condition: Used</p>
+			<p>Price: </p>
+		</div>
+		<button class="gotoLink" onclick="location.href='https://www.amazon.com/';" >
+			<img src="Amazon.png">
+		</button>
+	</div>-->
+</div>
+</body>
+
+<button onclick="topFunction()" id="myBtn" title="Go to top"><img src="up.png" style="height: 20px; width: auto;"></button>
+<script>
+	window.onscroll = function() {scrollFunction()};
+	function scrollFunction() {
+		if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+			document.getElementById("myBtn").style.display = "block";
+		} else {
+			document.getElementById("myBtn").style.display = "none";
+		}
+	}
+	// When the user clicks on the button, scroll to the top of the document
+	function topFunction() {
+		document.body.scrollTop = 0; // For Safari
+		document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+	}
+</script>
+
+</html>
