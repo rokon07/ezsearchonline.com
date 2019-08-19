@@ -27,8 +27,22 @@
 			function enterPressed(e) {
 				var keycode = (e.keyCode ? e.keyCode : e.which);
 				if(keycode=='13') {
+					/*let searchTerm= document.getElementById("box").value;
+					location.href = "searchPage.html" +"?"+searchTerm;*/
+					let website=document.getElementById("websitelists").children;
+					let webName='';
+					for(let i=1; i<=website.length; i+=2){
+						if(website[i].checked){
+							if(i!=(website.length-1)){
+								webName = webName + website[i].value + "+";
+							}else {
+								webName = webName + website[i].value;
+							}
+						}
+					}
+					//console.log(webName);
 					let searchTerm= document.getElementById("box").value;
-					location.href = "searchPage.html" +"?"+searchTerm;
+					location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName;
 				}
 			}
 		</script>
@@ -45,14 +59,30 @@
 		<li>Price: <input type="text" placeholder="  Min" name="search"
 						  style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black;"/> to <input type="text" placeholder="  Max" name="search"
 																													  style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black;"/></li>
-		<li>Websites: <br><input type="checkbox" name="website1" value="Amazon"> Amazon </button>
-			<br><input type="checkbox" name="website2" value="Craiglist"> Craiglist </button>
-			<br><input type="checkbox" name="website3" value="Ebay"> Ebay </button>
-			<br><input type="checkbox" name="website4" value="LetGo"> LetGo </button>
-			<br><input type="checkbox" name="website5" value="OfferUp"> OfferUp </button>
-			<br><input type="checkbox" name="website6" value="AliExpresss"> AliExpresss </button>
-			<br><input type="checkbox" name="website7" value="FB Marketplace"> FB Marketplace </button>
+		<li id="websitelists">Websites: <br><input id="ebay" type="checkbox" name="website3" value="Ebay"> Ebay </button>
+			<br><input id="craigslist" type="checkbox" name="website2" value="Craigslist"> Craigslist DC </button>
+			<br><input id="microcenter" type="checkbox" name="website4" value="MicroCenter"> Micro Center </button>
+			<br><input id="walmart" type="checkbox" name="website5" value="walmart"> Walmart </button>
 		</li>
+		<button id="refineButton" type="submit" onclick="refineSearch()">Refine Search</button>
+		<script>
+			function refineSearch() {
+					let website=document.getElementById("websitelists").children;
+					let webName='';
+					for(let i=1; i<=website.length; i+=2){
+						if(website[i].checked){
+							if(i!=(website.length-1)){
+								webName = webName + website[i].value + "+";
+							}else {
+								webName = webName + website[i].value;
+							}
+						}
+					}
+
+				let searchTerm= document.getElementById("box").value;
+				location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName;
+			}
+		</script>
 	</ul>
 </div>
 
