@@ -8907,7 +8907,7 @@ var attributeRules = {
 		if(len === 0){
 			return falseFunc;
 		}
-		
+
 		if(data.ignoreCase){
 			value = value.toLowerCase();
 
@@ -10277,7 +10277,7 @@ DomHandler.prototype.onerror = function(error){
 
 DomHandler.prototype.onclosetag = function(){
 	//if(this._tagStack.pop().name !== name) this._handleCallback(Error("Tagname didn't match!"));
-	
+
 	var elem = this._tagStack.pop();
 
 	if(this._options.withEndIndices && elem){
@@ -10822,7 +10822,7 @@ exports.prepend = function(elem, prev){
 	if(elem.prev){
 		elem.prev.next = prev;
 	}
-	
+
 	prev.parent = parent;
 	prev.prev = elem.prev;
 	prev.next = elem;
@@ -11579,7 +11579,7 @@ Parser.prototype.onclosetag = function(name) {
     if (this._lowerCaseTagNames) {
         name = name.toLowerCase();
     }
-    
+
     if (name in foreignContextElements || name in htmlIntegrationElements) {
         this._foreignContext.pop();
     }
@@ -11628,7 +11628,7 @@ Parser.prototype._closeCurrentTag = function() {
             this._cbs.onclosetag(name);
         }
         this._stack.pop();
-        
+
     }
 };
 
@@ -28132,8 +28132,10 @@ window.scrape= function () {
     let microCenterSearchResult = [];
     let craiglistSearchResult = [];
     let walmartSearchResult= [];
+  let neweggSearchResult= [];
 
-    if (document.getElementById("ebay").checked) {
+
+  if (document.getElementById("ebay").checked) {
         ebay(ebayUrl);
     }
     if (document.getElementById("microcenter").checked) {
@@ -28146,6 +28148,7 @@ window.scrape= function () {
         walmart(walmartUrl);
     }
 
+newegg('https://www.newegg.com/p/pl?d=gtx1070+ti+new&PageSize=96');
 
     function ebay(url) {
         const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -28348,6 +28351,74 @@ window.scrape= function () {
         })();
     }
 
+    /* newegg----------------------------*/
+
+  function newegg(url) {
+    let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+
+    function doCORSRequest(options, printResult) {
+      let x = new XMLHttpRequest();
+      x.open(options.method, cors_api_url + options.url);
+      x.onload = x.onerror = function () {
+        printResult(
+            options.method + ' ' + options.url + '\n' +
+            x.status + ' ' + x.statusText + '\n\n' +
+            (x.responseText || '')
+        );
+      };
+      if (/^POST/i.test(options.method)) {
+        x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      }
+      x.send(options.data);
+    }
+
+// Bind event
+    (function () {
+      doCORSRequest({
+        method: this.id === 'post' ? 'POST' : 'GET',
+        url: url,
+      }, function printResult(result) {
+        const $ = cheerio.load(result);
+        console.log(result)
+        const items=$('.list-wrap').children().eq(3).children();
+        //console.log(items.length);
+
+        for(var i = 0; i < items.length * 2; i+= 2){
+          console.log('enter');
+          const itemLink = items.children().eq(i).attr('href');
+          var itemImage = 'https:' + items.children().eq(i).children().eq(1).attr('src');
+          console.log(itemImage);
+
+          var itemName = items.children().eq(i).children().eq(1).attr('title');
+          //itemImage = itemImage.substring(2, itemImage.length);
+          itemName = itemName.substring(0, 60);
+          itemName = itemName.substring(0, Math.min(itemName.length, itemName.lastIndexOf(" ")));
+          neweggSearchResult.push(itemImage + ' | ' + itemName + ' | ' + "New" + ' | ' + '$00.00' + ' | ' + itemLink + '\n');
+
+        }
+        const items2=$('.list-wrap').children().eq(7).children();
+        console.log(items2.length);
+        for(var i = 0; i < items2.length * 2; i+= 2){
+          const itemLink = items2.children().eq(i).attr('href');
+          var itemImage = items2.children().eq(i).children().eq(1).attr('src');
+          var itemName = items2.children().eq(i).children().eq(1).attr('title');
+          //itemImage = itemImage.substring(2, itemImage.length);
+          itemName = itemName.substring(0, 60);
+          itemName = itemName.substring(0, Math.min(itemName.length, itemName.lastIndexOf(" ")));
+          neweggSearchResult.push(itemImage + ' | ' + itemName + ' | ' + "New" + ' | ' + '$00.00' + ' | ' + itemLink + '\n');
+        }
+
+        var allResult = '';
+        for (let i = 0; i < neweggSearchResult.length; i++) {
+          allResult = allResult.concat(neweggSearchResult[i]);
+        }
+
+        showResult.show(allResult, 'newegg');
+      });
+
+    })();
+  }
+
 }
 
 
@@ -28409,6 +28480,10 @@ exports.show= function(allresult, website) {
                 break;
             case 'walmart' :
                 websiteImg.src="walmart-logo.png";
+                break;
+            case 'newegg' :
+                websiteImg.src="newegg-logo.png";
+                break;
         }
         //websiteImg.src="ebay-logo.png";
         button.appendChild(websiteImg);
