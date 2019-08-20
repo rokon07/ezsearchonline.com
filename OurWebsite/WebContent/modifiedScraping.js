@@ -28484,6 +28484,9 @@ exports.show= function(allresult, website) {
             case 'newegg' :
                 websiteImg.src="newegg-logo.png";
                 break;
+            case 'microcenter' :
+                websiteImg.src="microcenter-logo.png";
+                break;
         }
         //websiteImg.src="ebay-logo.png";
         button.appendChild(websiteImg);

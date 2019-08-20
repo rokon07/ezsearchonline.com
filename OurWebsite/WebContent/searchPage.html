@@ -1,27 +1,30 @@
-
 <!DOCTYPE html>
 <html>
 <header>
 	<link rel="stylesheet" type="text/css" href="style2.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<link rel="stylesheet" href="https://use.typekit.net/omc5vhi.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Font awesome -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link rel="shortcut icon" type="image/ico" href="/images/favicon1.ico"/>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="modifiedScraping.js"> </script>
 
-	<title>"page2"</title>
+
+	<title>eZSearch Results</title>
 </header>
 
 <div class="topBar" style="height: 100px; width: 100%; ">
 	<img class="mainlogo" src="logo.png" alt="logo">
-	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 28px; margin-left: 50px; display: inline;">
+	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:30%; height:40px; margin-top: 28px;
+	margin-left: 50px; display: inline;  overflow: auto;">
 		<img src="searchLogo.png" style="height: 22px; width: auto; margin-left: 10px; margin-right: 5px; margin-bottom: 2px;"/>
 		<input id="box" type="text" placeholder="Search for an Item ..." name="search" onkeypress="enterPressed(event)"
-			   style="font-family: work-sans; border: 0px; width:720px; height:36px; display: inline;"/>
+			   style="font-family: work-sans; border: 0px; width:70%; height:36px; display: inline-block;  overflow: auto;"/>
 		<script>
 			//script for redirecting to search result wiht 'enter' key pressed
 			function enterPressed(e) {
@@ -63,8 +66,9 @@
 			<br><input id="craigslist" type="checkbox" name="website2" value="Craigslist"> Craigslist DC </button>
 			<br><input id="microcenter" type="checkbox" name="website4" value="MicroCenter"> Micro Center </button>
 			<br><input id="walmart" type="checkbox" name="website5" value="walmart"> Walmart </button>
+			<br><input id="newegg" type="checkbox" name="website5" value="newegg"> NewEgg </button>
+			<br><button id="refineButton" type="submit" onclick="refineSearch()">Refine Search</button>
 		</li>
-		<button id="refineButton" type="submit" onclick="refineSearch()">Refine Search</button>
 		<script>
 			function refineSearch() {
 					let website=document.getElementById("websitelists").children;
@@ -78,7 +82,6 @@
 							}
 						}
 					}
-
 				let searchTerm= document.getElementById("box").value;
 				location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName;
 			}
@@ -117,5 +120,7 @@
 		document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 	}
 </script>
-
+<footer>
+	© Mohd Rokon / Touhid Nuhash
+</footer>
 </html>

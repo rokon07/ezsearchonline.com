@@ -4,51 +4,38 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://use.typekit.net/omc5vhi.css">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-	<title>"NAME"</title>
+	<title>eZSearch</title>
+	<div class="whitebox">
 	<header>
 		<img id="mainlogo" src="logo.png" alt="logo">
 	</header>
 </head>
 <body>
 	<div class="Intro"> <!-- Added a Disc -->
-		This website allows user to search from a variety of Ecommerce websites. This is an in one website
-		<br> making searhing for used and new goods easier. Frees the user form having to go to multiple
-		<br> sites to find listing for items.
+		This website allows users to search from a variety of E-commerce websites. This is an all in one website
+		<br> making searhing for used and new goods easier for the user. It frees the user form having the trouble of going to multiple
+		<br> sites to find listing for items they desire.
 	</div>
 
 
-	<div id="searchBar">
-		<input id="box" type="search" placeholder="  Search for an Item ..." onkeypress="enterPressed(event)"
-		style="width:700px; height:40px;"/>
+	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 10px;">
+		<img src="searchLogo.png" style="height: 22px; width: auto; margin-right: 5px; margin-bottom: 2px;"/>
+		<input id="box" type="search" placeholder="Search for an Item ..." onkeypress="enterPressed(event)"
+		style="font-family: work-sans; border: 0px; width:720px; height:36px; display: inline; /*background: white;/*"/>
 		<script>
 			//script for redirecting to search result wiht 'enter' key pressed
 			function enterPressed(e) {
 				var keycode = (e.keyCode ? e.keyCode : e.which);
-				let webName='';
 				if(keycode=='13') {
-					let website=document.getElementById("storeButtons").children;
-					//console.log(website.length);
-					for(let i=0; i<website.length; i++) {
-						if(website[i].checked){
-							if(i!=(website.length-1)){
-								webName = webName + website[i].value + "+";
-							}else {
-								webName = webName + website[i].value;
-							}
-						}
-					}
-					//console.log(webName);
 					let searchTerm= document.getElementById("box").value;
-					location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName;
+					location.href = "searchPage.html" +"?"+searchTerm;
 				}
 			}
 		</script>
-		<button id="searchButton" type="submit"
-		<i class="glyphicon glyphicon-search"></i>
-	</button>
 </div>
 
 	<div id="storeButtons" style="width:100%"> <!-- Buttons for options -->
@@ -56,6 +43,11 @@
 		<input type="checkbox" name="website2" value="Craigslist" checked="checked"> Craigslist DC </button>
 		<input type="checkbox" name="website4" value="MicroCenter" checked="checked"> Micro Center </button>
 		<input type="checkbox" name="website5" value="walmart" checked="checked"> Walmart </button>
+		<input type="checkbox" name="website6" value="newegg" checked="checked"> newegg </button>
 	</div>
 </body>
+</div>
+<footer>
+	© Mohd Rokon / Touhid Nuhash
+</footer>
 </html>
