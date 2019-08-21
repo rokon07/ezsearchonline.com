@@ -8,12 +8,119 @@ searchTitle=searchTitle.replace(/ /gi, '+')
 //const url='https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.Xiphone+x+new.TRS1&_nkw=iphone+x+new&_sacat=0';
 
 //Microcenter: put search term where it says gamingheadset
-const searchurl='https://www.microcenter.com/search/search_results.aspx?Ntt=gamingheadset&searchButton=search';
+//const searchurl='https://www.microcenter.com/search/search_results.aspx?Ntt=gamingheadset&searchButton=search';
 //const urlList = [];
 //const itemDetail = [];
 //const searchurl='https://www.newegg.com/p/pl?d=gtx1070+ti+new&PageSize=96'; //just need to replace after = for space add + then &PageSize=96
+//const searchurl = 'https://www2.hm.com/en_us/search-results.html?q=shirt';
+//const searchurl = 'https://geebo.com/merchandise/search/mobile//distance/50/?q=iphone';
+//const searchurl = 'https://poshmark.com/search?query=Shirts&type=listings&ac=true';
+
+const searchurl = 'https://www.tradesy.com/search?q=pants'
 
 var file = fs.createWriteStream('output.txt');
+
+function tradesy(url) {
+    const result = fetch(`${url}`).then(response => response.text());
+    result.then(body => {
+        const $= cheerio.load(body);
+        const items=$("#items-container-grid").children();
+        console.log(items.length)
+
+        for(var i = 0; i < items.length; i++) {
+            const itemnum = items.children().eq(i).children()
+            if (itemnum.length == 3) {
+                const itemImg = items.children().eq(i).children().attr('data-category-want-image');
+                const itemTitle = items.children().eq(i).children().attr('data-category-want-title');
+                const itemPrice = items.children().eq(i).children().attr('data-category-want-price');
+                const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
+                console.log(itemImg)
+                console.log(itemTitle)
+                console.log(itemPrice)
+                console.log(itemLink)
+            }
+            else if(itemnum.length == 4) {
+                const itemImg = items.children().eq(i).children().eq(1).attr('data-category-want-image');
+                const itemTitle = items.children().eq(i).children().eq(1).attr('data-category-want-title');
+                const itemPrice = items.children().eq(i).children().eq(1).attr('data-category-want-price');
+                const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
+                console.log(itemImg)
+                console.log(itemLink)
+                console.log(itemTitle)
+                console.log(itemPrice)
+
+            }
+
+        }
+
+    });
+}
+tradesy(searchurl);
+
+function poshmark(url) {
+    const result = fetch(`${url}`).then(response => response.text());
+    result.then(body => {
+        const $= cheerio.load(body);
+        const items=$("#tiles-con").children();
+        console.log(items.length)
+
+        for (var i = 0; i < items.length; i++){
+            const itemTitle = items.children().eq(i).children().eq(0).attr('title')
+            const itemPrice = items.children().eq(i).attr('data-post-price');
+            const itemLink = 'https://poshmark.com' + items.children().eq(i).children().eq(0).attr('href')
+            const itemImg = items.children().eq(i).children().eq(0).children().attr('src')
+
+            console.log(itemTitle)
+            console.log(itemPrice)
+            console.log(itemLink)
+            console.log(itemImg)
+
+        }
+    });
+}
+//poshmark(searchurl);
+
+function geebo(url) {
+    const result = fetch(`${url}`).then(response => response.text());
+    result.then(body => {
+        const $= cheerio.load(body);
+        const items=$(".list_items").children();
+        console.log(items.length)
+
+        for(var i = 2; i < 40; i++){
+            const itemImg = items.children().eq(i).children().eq(1).children().eq(0).children().attr('src');
+            const itemLink = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children().eq(0).attr('href')
+            const itemTitle = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children('.title').text()
+            const itemPrice = items.children().eq(i).children().eq(1).children().eq(1).children('.price').text()
+            console.log(itemImg)
+            //console.log(itemLink.length)
+            console.log(itemLink)
+            console.log(itemTitle)
+            console.log(itemPrice)
+        }
+    });
+}
+//geebo(searchurl);
+
+function hnm(url) {
+    const result = fetch(`${url}`).then(response => response.text());
+    result.then(body => {
+        const $= cheerio.load(body);
+        const items=$(".page-content").children().eq(0).children().eq(1).children();
+        for(var i = 0; i < items.length; i++){
+            const itemLink = 'https://www2.hm.com' +  items.children().eq(i).children().eq(0).children().eq(0).attr('href');
+            const itemImg = 'http:' + items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('data-src');
+            const itemTitle = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('alt');
+            const itemPrice = items.children().eq(i).children().eq(1).children('.item-price').text();
+            console.log(itemLink)
+            console.log(itemImg)
+            console.log(itemTitle)
+            console.log(itemPrice)
+        }
+    });
+}
+//hnm(searchurl);
+
 
 function newegg(url) {
     const result = fetch(`${url}`).then(response => response.text());
@@ -75,7 +182,7 @@ function micro(url) {
         }
     });
 }
-micro(searchurl);
+//micro(searchurl);
 
 //ebay(url)
 //ebay(searchurl);
