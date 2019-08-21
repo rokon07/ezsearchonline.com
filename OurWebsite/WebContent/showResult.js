@@ -55,6 +55,22 @@ exports.show= function(allresult, website) {
                 break;
             case 'walmart' :
                 websiteImg.src="walmart-logo.png";
+                break;
+            case 'hnm' :
+                websiteImg.src="hnm-logo.png";
+                break;
+            case 'geebo' :
+                websiteImg.src="geebo-logo.png";
+                break;
+            case 'poshmark' :
+                websiteImg.src="poshmark-logo.png";
+                break;
+            case 'tradesy' :
+                websiteImg.src="tradesy-logo.png";
+                break;
+        	case 'microcenter' :
+                websiteImg.src="microcenter-logo.png";
+                break;
         }
         //websiteImg.src="ebay-logo.png";
         button.appendChild(websiteImg);
