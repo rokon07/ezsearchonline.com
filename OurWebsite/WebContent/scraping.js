@@ -219,6 +219,16 @@ window.scrape= function () {
     const fetch = require('node-fetch');
     const cheerio = require('cheerio');
     const showResult = require('./showResult');
+    const firebase= require('firebase');
+
+    firebase.initializeApp({
+        databaseURL: "https://ezsearchonlinedatabase.firebaseio.com/"
+    });
+
+    //let ref=firebase.database().ref('database');
+    let ref=firebase.database().ref().child('database');
+
+
 
     let search = window.location.href; //get the url
 
@@ -299,18 +309,39 @@ window.scrape= function () {
                 }
 
                 const condition = items.children().eq(i).children().eq(1).children('.s-item__subtitle').children('.SECONDARY_INFO').text();
-                var price = items.children().eq(i).children().eq(1).children().eq(3).children().eq(0).children('.s-item__price').text();
+                let price = items.children().eq(i).children().eq(1).children().eq(3).children().eq(0).children('.s-item__price').text();
                 if (price == '') {
-                    var price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
+                     price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
                     if (price == '') {
-                        let price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
+                        price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
                     }
                 }
+                //price=price.replace("$", '');
+                var n = price.indexOf('t');
+                price = price.substring(0, n != -1 ? n : price.length);
+                price=price.replace("$", '');
+                price=Number(price);
                 //file.write(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
                 if (i != items.length - 1) {
-                    ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
+                    //ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
+                    ref.push({
+                        pLink: Plink,
+                        pName: name,
+                        img: img,
+                        pPrice: price,
+                        pCondition: condition
+                    });
+                    //ref.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
                 } else {
-                    ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
+                    //ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
+                    ref.push({
+                        pLink: Plink,
+                        pName: name,
+                        img: img,
+                        pPrice: price,
+                        pCondition: condition
+                    });
+                    //ref.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
                 }
             }
             var allResult = '';
@@ -318,10 +349,10 @@ window.scrape= function () {
                 allResult = allResult.concat(ebaySearchResult[i]);
             }
 
-            showResult.show(allResult, 'ebay');
+            //showResult.show(allResult, 'ebay');
         });
-
     }
+    let out=[];
 
     function micro(url) {
         const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
@@ -469,30 +500,18 @@ window.scrape= function () {
                                 //.log(result)
                                 const $ = cheerio.load(result);
                                 //console.log(result);
-                                /*const pName=$('.page-full-wrapper').children().eq(1).children().eq(0)
-                                    .children().eq(0).children().eq(0).children().eq(0).children().eq(0)
-                                    .children().eq(0).children().eq(2).children().eq(3).children().eq(0).
-                                    children().eq(0).children().eq(0).children().eq(0).attr('content');*/
                                 let pName=$('.ProductTitle').children().eq(0).attr('content');
                                 pName=pName.substring(0,60);
                                 pName=pName.substring(0,Math.min(pName.length,pName.lastIndexOf(' ')));
-
-
-                                /*const img=$('.page-full-wrapper').children().eq(1).children().eq(0)
-                                    .children().eq(0).children().eq(0).children().eq(0).children().eq(0)
-                                    .children().eq(0).children().eq(2).children().eq(3).children().eq(0)
-                                    .children().eq(2).children().eq(0).children().eq(0).children().eq(0)
-                                    .children().eq(0).children().eq(0).attr('class');*/
                                     const pLink=url;
                                     const img=$('.prod-hero-image-carousel-image').attr('src');
                                     const pPrice=$('.price-characteristic').attr('content');
                                     const pCondition="New";
                                     //console.log(pPrice);
                                     //console.log(img);
-                                    if(img!='undifined'){
+                                    if(img!='undefined'){
                                         showResult.show(img + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n', 'walmart');
                                     }
-
 
                             });
 
@@ -501,145 +520,37 @@ window.scrape= function () {
 
                     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    /*if(temp2[3].includes('title')){
-                        temp2[3] = temp2[3].replace("</mark>", "");
-                        temp2[3] = temp2[3].replace(/<mark>|"title":|\\|"/gi, "");
-                        pName=temp2[3];
-                    }else{
-                        temp2[4] = temp2[4].replace("</mark>", "");
-                        temp2[4] = temp2[4].replace(/<mark>|"title":|\\|"/gi, "");
-                        pName=temp2[4];
-                    }
-                    //for image formart
-                    if(temp2[5].includes('imageUrl')){
-                        temp2[5]=temp2[5].replace(/"imageUrl":"|"/gi, "");
-                        img=temp2[5];
-                    }else if(temp2[6].includes('imageUrl')){
-                        temp2[6]=temp2[6].replace(/"imageUrl":"|"/gi, "");
-                        img=temp2[6];
-                    }else if (temp2[7].includes('imageUrl')){
-                        temp2[7]=temp2[7].replace(/"imageUrl":"|"/gi, "");
-                        img=temp2[7];
-                    }else{
-                        temp2[11]=temp2[11].replace(/"imageUrl":"|"/gi, "");
-                        img=temp2[11];
-                    }
-
-                    //for url format
-                    if(temp2[6].includes('productPageUrl')){
-                        temp2[6]=temp2[6].replace(/"productPageUrl":"|"/gi, "");
-                        pLink=pLink+temp2[6];
-                    }else if(temp2[7].includes('productPageUrl')){
-                        temp2[7]=temp2[7].replace(/"productPageUrl":"|"/gi, "");
-                        pLink=pLink+temp2[7];
-                    }else if(temp2[8].includes('productPageUrl')){
-                        temp2[8]=temp2[8].replace(/"productPageUrl":"|"/gi, "");
-                        pLink=pLink+temp2[8];
-                    }else{
-                        temp2[12]=temp2[12].replace(/"productPageUrl":"|"/gi, "");
-                        pLink=pLink+temp2[12];
-                    }
-
-                    //for price format
-                    if(temp2[26].includes('offerPrice')){
-                        temp2[26]=temp2[26].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[26];
-                    }else if(temp2[27].includes('offerPrice')){
-                        temp2[27]=temp2[27].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[27];
-                    }else if(temp2[24].includes('offerPrice')){
-                        temp2[24]=temp2[24].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[24];
-                    }else if(temp2[30].includes('offerPrice')){
-                        temp2[30]=temp2[30].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[30];
-                    }else if(temp2[31].includes('offerPrice')){
-                        temp2[31]=temp2[31].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[31];
-                    }else if(temp2[29].includes('offerPrice')){
-                        temp2[29]=temp2[29].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[29];
-                    }else if(temp2[28].includes('offerPrice')){
-                        temp2[28]=temp2[28].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[28];
-                    }else if(temp2[33].includes('offerPrice')){
-                        temp2[33]=temp2[33].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[33];
-                    }else{
-                        temp2[25]=temp2[25].replace(/"offerPrice":|"/gi, "");
-                        pPrice=pPrice+temp2[25];
-                    }*/
-
-                   //walmartSearchResult.push(img + ' | ' + pName + ' | ' + pCondition + ' | ' + '$' + ' | ' + pLink + '\n')
                 }
-                //console.log(r);
-                /*let items=$('#searchProductResult').children().eq(1).children();
-                console.log(items.length)
-                for(let i=-30; i<48; i++){
-                    let pLink='https://www.walmart.com';
-                    pLink = pLink+items.eq(i).children().eq(0).children().eq(1)
-                        .children().eq(1).children().eq(0).children().eq(1).children().eq(0)
-                        .attr('href');
-
-                    const pImg=items.eq(i).children().eq(0).children().eq(1)
-                        .children().eq(1).children().eq(0).children().eq(1).children().eq(0)
-                        .children().eq(0).attr('src');
-
-                    const pName=items.eq(i).children().eq(0).children().eq(1)
-                        .children().eq(1).children().eq(0).children().eq(1).children().eq(0)
-                        .children().eq(0).attr('alt');
-
-                    const pPrice=items.eq(i).children().eq(0).children().eq(1)
-                        .children().eq(6).children().eq(0).children().eq(0).children().eq(0)
-                        .children('.price-main-block').children().eq(0).children().eq(0)
-                        .children().eq(0).text();
-
-                    const pCondition='New';
-                    console.log(pImg + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n');
-                    //walmartSearchResult.push(pImg + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n');
-                }*/
-
-                /*var allResult = '';
-                for (let i = 0; i < walmartSearchResult.length; i++) {
-                    allResult = allResult.concat(walmartSearchResult[i]);
-                }
-
-                showResult.show(allResult, 'walmart');*/
 
             });
 
         })();
     }
+
+
+
+    function waitForIt(N) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(() => resolve(), N);
+        });
+    };
+
+
+
+    waitForIt(5000)
+        .then(function () {
+            let out=ref.orderByValue();
+            out.once('value')
+                .then(function (snap) {
+                    console.log(snap.val(), '\n');
+                });
+        })
+
+
+
+
+
+
 
 }
 
