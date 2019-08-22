@@ -1,233 +1,43 @@
-/*
-window.scrape=function () {
-    const fetch = require('node-fetch');
-    const cheerio = require('cheerio');
-    const Chromy = require('chromy');
-
-    const showResult = require('./showResult');
-
-
-    //const puppeteerWeb=require('./node_modules/puppeteer/utils/browser/puppeteer-web');
-
-
-    var searchTitle = 'iphone x';
-    searchTitle = searchTitle.replace(/ /gi, '+')
-    console.log(searchTitle);
-    //const url='https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.Xiphone+x+new.TRS1&_nkw=iphone+x+new&_sacat=0';
-    const ebaySerachUrl = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.' + searchTitle + '.TRS1&_nkw=' + searchTitle + '&_sacat=0';
-    const aliExpressUrl = 'https://www.aliexpress.com/premium/iphone-new.html?ltype=premium&d=y&CatId=0&SearchText=iphone+new&trafficChannel=ppc&SortType=default&page=2&switch_new_app=y';
-
-    //const urlList = [];
-    //const itemDetail = [];
-    //var file=fs.createWriteStream('output.txt');
-    let ebaySearchResult = [];
-    let aliExpressSearchResult = [];
-
-//ebay(url);
-    ebay(ebaySerachUrl);
-    aliExpress(aliExpressUrl);
-
-     function ebay(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $('#srp-river-main').children().eq(1).children().eq(0).children('.s-item');
-            for (var i = 0; i < items.length; i++) {
-                const Plink = items.children().eq(i).children().eq(1).children('.s-item__link').attr('href'); //gets the urls for all the results displayed in the search
-                var img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('data-src');
-                if (img == undefined) {
-                    img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('src');
-                }
-                var name = items.children().eq(i).children().eq(1).children('.s-item__link').children().eq(0).children('.BOLD').text();
-                if (name == '') {
-                    name = items.children().eq(i).children().eq(1).children('.s-item__link').children('.s-item__title').text();
-                }
-
-                const condition = items.children().eq(i).children().eq(1).children('.s-item__subtitle').children('.SECONDARY_INFO').text();
-                var price = items.children().eq(i).children().eq(1).children().eq(3).children().eq(0).children('.s-item__price').text();
-                if (price == '') {
-                    var price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
-                    if (price == '') {
-                        var price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
-                    }
-                }
-                //file.write(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-                ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
-            }
-            var allResult = '';
-            for (let i = 0; i < ebaySearchResult.length; i++) {
-                allResult = allResult.concat(ebaySearchResult[i]);
-            }
-            console.log(ebaySearchResult);
-            showResult.show(allResult);
-        });
-    }
-
-function aliExpress(url) {
-
-    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-         //chromy code
-        let chromy = new Chromy({visible: true})
-        chromy.chain()
-            .goto(proxyUrl+url)
-            .evaluate(() => {
-                return document.body.innerHTML
-            })
-            .result((r) => {
-                const $= cheerio.load(r);
-                const item=$('#root').children('.glosearch-wrap').children('.page-content').children('.main-content').children().eq(1).children('.product-container')
-                    .children().eq(1).children('.list-items').children().find('li');
-
-                for(let i=0; i<item.length;i++){
-                    const img=item.children().eq(i).children('.product-img').children('.place-container').children().eq(0).find('img').attr('src');
-                    const name=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-title-wrap').children().eq(0).attr('title');
-
-                    const Plink=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-title-wrap').children().eq(0).attr('href');
-
-
-
-                    const condition='view at product webpage!!!'
-                    let price=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-price-wrap').children('.item-price-row').children('.price-current').text();
-                    //let shipping=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-shipping-wrap').children().text();
-
-
-
-                    //console.log(price);
-                    aliExpressSearchResult.push(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-
-                }
-
-                let allResult='';
-
-                for(let i=0; i<aliExpressSearchResult.length;i++){
-                    allResult=allResult.concat(aliExpressSearchResult[i]);
-                }
-
-                showResult(aliExpressSearchResult);
-
-            })
-            .end()
-            .then(() => chromy.close())
-
-
-
-        // chromy code
-
-        /!*let chromy = new Chromy()
-        await chromy.goto(url)
-        const result = await chromy.evaluate(() => {
-            return document.body.innerHTML;
-        })
-            .result((r) => {
-                const $= cheerio.load(r);
-                const item=$('#root').children('.glosearch-wrap').children('.page-content').children('.main-content').children().eq(1).children('.product-container')
-                    .children().eq(1).children('.list-items').children().find('li');
-
-                for(let i=0; i<item.length;i++){
-                    const img=item.children().eq(i).children('.product-img').children('.place-container').children().eq(0).find('img').attr('src');
-                    const name=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-title-wrap').children().eq(0).attr('title');
-
-                    const Plink=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-title-wrap').children().eq(0).attr('href');
-
-
-
-                    const condition='view at product webpage!!!'
-                    let price=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-price-wrap').children('.item-price-row').children('.price-current').text();
-                    //let shipping=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-shipping-wrap').children().text();
-
-
-
-                    //console.log(price);
-                    aliExpressSearchResult.push(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-
-                }
-
-                let allResult='';
-
-                for(let i=0; i<ebaySearchResult.length;i++){
-                    allResult=allResult.concat(ebaySearchResult[i]);
-                }
-
-                showResult(aliExpressSearchResult);
-
-            })
-            await chromy.close()
-*!/
-
-
-
-        // cheerio code
-        /!*const $= cheerio.load(bodyHTML);
-        const item=$('#root').children('.glosearch-wrap').children('.page-content').children('.main-content').children().eq(1).children('.product-container')
-            .children().eq(1).children('.list-items').children().find('li');
-
-        for(let i=0; i<item.length;i++){
-            const img=item.children().eq(i).children('.product-img').children('.place-container').children().eq(0).find('img').attr('src');
-            const name=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-title-wrap').children().eq(0).attr('title');
-
-            const Plink=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-title-wrap').children().eq(0).attr('href');
-
-
-
-            const condition='view at product webpage!!!'
-            let price=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-price-wrap').children('.item-price-row').children('.price-current').text();
-            //let shipping=item.children().eq(i).children().eq(1).children('.hover-help').children('.item-shipping-wrap').children().text();
-
-
-
-            //console.log(price);
-            aliExpressSearchResult.push(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-
-        }
-
-
-        let allResult='';
-
-        for(let i=0; i<ebaySearchResult.length;i++){
-            allResult=allResult.concat(ebaySearchResult[i]);
-        }*!/
-/!*
-        //phantom js
-    var _ph, _page, _outObj;
-
-    phantom
-        .create()
-        .then(ph => {
-            _ph = ph;
-            return _ph.createPage();
-        })
-        .then(page => {
-            _page = page;
-            return _page.open(url);
-        })
-        .then(status => {
-            console.log(status);
-            return _page.property('content');
-        })
-        .then(content => {
-            console.log(content);
-            _page.close();
-            _ph.exit();
-        })
-        .catch(e => console.log(e));*!/
-
-    }
-
-}*/
-window.scrape= function () {
+window.scrape = function () {
     const fetch = require('node-fetch');
     const cheerio = require('cheerio');
     const showResult = require('./showResult');
-    /*const firebase= require('firebase');
+    const firebase = require('firebase');
 
     firebase.initializeApp({
         databaseURL: "https://ezsearchonlinedatabase.firebaseio.com/"
     });
 
-    //let ref=firebase.database().ref('database');
-    let ref=firebase.database().ref().child('database');*/
 
+    let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+
+    function doCORSRequest(options, printResult) {
+        let x = new XMLHttpRequest();
+        x.open(options.method, cors_api_url + options.url);
+        x.onload = x.onerror = function () {
+            printResult(
+                options.method + ' ' + options.url + '\n' +
+                x.status + ' ' + x.statusText + '\n\n' +
+                (x.responseText || '')
+            );
+        };
+        if (/^POST/i.test(options.method)) {
+            x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        }
+        x.send(options.data);
+    }
+
+
+    //let ref=firebase.database().ref('database');
+
+    function ID() {
+        // Math.random should be unique because of its seeding algorithm.
+        // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+        // after the decimal.
+        return '_' + Math.random().toString(36).substr(2, 9);
+    };
+
+    let ref = firebase.database().ref().child(ID());
 
 
     let search = window.location.href; //get the url
@@ -235,7 +45,7 @@ window.scrape= function () {
     let temp = search.toString().split("?"); //splits the url to extract info
     let sTerm = temp[1].split("&"); //get splits the searcgtitle and website [0]=searchtitle, [1]=websites
 
-    let ebaySearchTitle = sTerm[0].replace(/%20/gi, '+');
+    let SearchTitle = sTerm[0].replace(/%20/gi, '+');
     let searchBarText = sTerm[0].replace(/%20/gi, ' ');
 
     document.getElementById("box").setAttribute("value", searchBarText);
@@ -258,6 +68,9 @@ window.scrape= function () {
             case "walmart":
                 document.getElementById("walmart").setAttribute("checked", "checked");
                 break;
+            case "tradesy":
+                document.getElementById("tradesy").setAttribute("checked", "checked");
+                break;
             case "hnm":
                 document.getElementById("hnm").setAttribute("checked", "checked");
                 break;
@@ -271,38 +84,24 @@ window.scrape= function () {
                 document.getElementById("tradesy").setAttribute("checked", "checked");
                 break;
         }
-        ;
+
     }
 
-    console.log(ebaySearchTitle);
-    //const url='https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.Xiphone+x+new.TRS1&_nkw=iphone+x+new&_sacat=0';
-    const ebayUrl = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.' + ebaySearchTitle + '.TRS1&_nkw=' + ebaySearchTitle + '&_sacat=0';
-    const microCenterUrl = 'https://www.microcenter.com/search/search_results.aspx?Ntt=' + ebaySearchTitle + '&searchButton=search';
-    const craigslistUrl = 'https://washingtondc.craigslist.org/search/sss?query=' + ebaySearchTitle + '&sort=rel';
-    const walmartUrl='https://www.walmart.com/search/?cat_id=0&query='+ebaySearchTitle;
-    const hnmUrl='https://www2.hm.com/en_us/search-results.html?q=' + ebaySearchTitle;
-    const geeboUrl='https://geebo.com/merchandise/search/mobile//distance/50/?q=' + ebaySearchTitle;
-    const poshmarkUrl='https://poshmark.com/search?query=' + ebaySearchTitle + '&type=listings&ac=true';
-    const tradesyUrl = 'https://www.tradesy.com/search?q=' + ebaySearchTitle;
-
-
-    //var file=fs.createWriteStream('output.txt');
-    let ebaySearchResult = [];
-    //let newEggSearchResult= [];
-    let microCenterSearchResult = [];
-    const craiglistSearchResult = [];
-    let walmartSearchResult= [];
-    let hnmSearchResult = [];
-    let geeboSearchResult = [];
-    let poshmarkSearchResult = [];
-    let tradesySearchResult = [];
+    const ebayUrl = 'https://www.ebay.com/sch/i.html?_from=R40&_trksid=p2380057.m570.l1313.TR11.TRC2.A0.H0.' + SearchTitle + '.TRS1&_nkw=' + SearchTitle + '&_sacat=0';
+    const microCenterUrl = 'https://www.microcenter.com/search/search_results.aspx?Ntt=' + SearchTitle + '&searchButton=search';
+    const craigslistUrl = 'https://washingtondc.craigslist.org/search/sss?query=' + SearchTitle + '&sort=rel';
+    const walmartUrl = 'https://www.walmart.com/search/?cat_id=0&query=' + SearchTitle;
+    const hnmUrl = 'https://www2.hm.com/en_us/search-results.html?q=' + SearchTitle;
+    const geeboUrl = 'https://geebo.com/merchandise/search/mobile//distance/50/?q=' + SearchTitle;
+    const poshmarkUrl = 'https://poshmark.com/search?query=' + SearchTitle + '&type=listings&ac=true';
+    const tradesyUrl = 'https://www.tradesy.com/search?q=' + SearchTitle;
 
 
     if (document.getElementById("ebay").checked) {
         ebay(ebayUrl);
     }
     if (document.getElementById("microcenter").checked) {
-        microcenter(microCenterUrl);
+        micro(microCenterUrl);
     }
     if (document.getElementById("craigslist").checked) {
         craigslist(craigslistUrl);
@@ -352,42 +151,26 @@ window.scrape= function () {
                 //price=price.replace("$", '');
                 var n = price.indexOf('t');
                 price = price.substring(0, n != -1 ? n : price.length);
-                price=price.replace("$", '');
-                price=Number(price);
+                price = price.replace("$", '');
+                price = Number(price);
+                const pWebsite = 'ebay';
                 //file.write(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-                if (i != items.length - 1) {
-                    //ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
-                    ref.push({
-                        pLink: Plink,
-                        pName: name,
-                        img: img,
-                        pPrice: price,
-                        pCondition: condition
-                    });
-                    //ref.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
-                } else {
-                    //ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
-                    ref.push({
-                        pLink: Plink,
-                        pName: name,
-                        img: img,
-                        pPrice: price,
-                        pCondition: condition
-                    });
-                    //ref.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
-                }
-            }
-            var allResult = '';
-            for (let i = 0; i < ebaySearchResult.length; i++) {
-                allResult = allResult.concat(ebaySearchResult[i]);
-            }
+                //ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
+                ref.push({
+                    pLink: Plink,
+                    pName: name,
+                    img: img,
+                    pPrice: price,
+                    pCondition: condition,
+                    pWebsite: pWebsite
 
-            //showResult.show(allResult, 'ebay');
+                });
+                //ref.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
+            }
         });
     }
-    let out=[];
 
-    function microcenter(url) {
+    function micro(url) {
         const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
         const result = fetch(`${proxyUrl + url}`).then(response => response.text());
         result.then(body => {
@@ -396,147 +179,33 @@ window.scrape= function () {
             for (var j = 0; j < items.length * 2; j += 2) {
                 const Plink = 'https://www.microcenter.com' + items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
                 const Pname = items.children().eq(j).children().eq(1).attr('data-name');
-                const Pprice = items.children().eq(j).children().eq(1).attr('data-price');
+                let Pprice = items.children().eq(j).children().eq(1).attr('data-price');
+                Pprice = Number(Pprice);
                 const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
+                const pCondition = 'New';
+                const pWebsite = 'microcenter'
                 //link
-                microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + "New" + ' | ' + Pprice + ' | ' + Plink + '\n');
+                //microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + pCondition + ' | ' + Pprice + ' | ' + Plink + '\n');
+                ref.push({
+                    pLink: Plink,
+                    pName: Pname,
+                    img: Pimg,
+                    pPrice: Pprice,
+                    pCondition: pCondition,
+                    pWebsite: pWebsite
+                });
             }
 
-            var allResult = '';
+            /*var allResult = '';
             for (let i = 0; i < microCenterSearchResult.length; i++) {
                 allResult = allResult.concat(microCenterSearchResult[i]);
             }
 
-            showResult.show(allResult, 'microcenter');
+            showResult.show(allResult, 'microcenter');*/
         });
     }
-
-    function tradesy(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items=$("#items-container-grid").children();
-            for(var i = 0; i < items.length; i++) {
-                const itemnum = items.children().eq(i).children()
-                if (itemnum.length == 3) {
-                    const itemImg = items.children().eq(i).children().attr('data-category-want-image');
-                    const itemTitle = items.children().eq(i).children().attr('data-category-want-title');
-                    const itemPrice = items.children().eq(i).children().attr('data-category-want-price');
-                    const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
-                    console.log(itemImg)
-                    console.log(itemTitle)
-                    console.log(itemPrice)
-                    console.log(itemLink)
-                    tradesySearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + "New" + ' | ' +  itemPrice + ' | ' + itemLink + '\n');
-
-                }
-                else if(itemnum.length == 4) {
-                    const itemImg = items.children().eq(i).children().eq(1).attr('data-category-want-image');
-                    const itemTitle = items.children().eq(i).children().eq(1).attr('data-category-want-title');
-                    const itemPrice = items.children().eq(i).children().eq(1).attr('data-category-want-price');
-                    const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(2).children().eq(1).attr('href');
-                    console.log(itemImg)
-                    console.log(itemLink)
-                    console.log(itemTitle)
-                    console.log(itemPrice)
-                    tradesySearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + "New" + ' | ' +  itemPrice + ' | ' + itemLink + '\n');
-
-                }
-            }
-            var allResult = '';
-            for (let i = 0; i < tradesySearchResult.length; i++) {
-                allResult = allResult.concat(tradesySearchResult[i]);
-            }
-            showResult.show(allResult, 'tradesy');
-        });
-    }
-
-    function poshmark(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items=$("#tiles-con").children();
-            for (var i = 0; i < items.length; i++){
-                const itemTitle = items.children().eq(i).children().eq(0).attr('title')
-                let itemPrice = items.children().eq(i).attr('data-post-price');
-                const itemLink = 'https://poshmark.com' + items.children().eq(i).children().eq(0).attr('href')
-                const itemImg = items.children().eq(i).children().eq(0).children().attr('src')
-                itemPrice = itemPrice.replace('$',"");
-                poshmarkSearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + "New" + ' | ' + itemPrice + ' | ' + itemLink + '\n');
-            }
-            var allResult = '';
-            for (let i = 0; i < poshmarkSearchResult.length; i++) {
-                allResult = allResult.concat(poshmarkSearchResult[i]);
-            }
-            showResult.show(allResult, 'poshmark');
-        });
-    }
-
-    function geebo(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items=$(".list_items").children();
-            for(var i = 2; i < 40; i++){
-                const itemImg = items.children().eq(i).children().eq(1).children().eq(0).children().attr('src');
-                const itemLink = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children().eq(0).attr('href')
-                const itemTitle = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children('.title').text()
-                let itemPrice = items.children().eq(i).children().eq(1).children().eq(1).children('.price').text()
-                itemPrice = itemPrice.replace('$',"");
-                geeboSearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + "New" + ' | ' +  itemPrice + ' | ' + itemLink + '\n');
-            }
-            var allResult = '';
-            for (let i = 0; i < geeboSearchResult.length; i++) {
-                allResult = allResult.concat(geeboSearchResult[i]);
-            }
-            showResult.show(allResult, 'geebo');
-        });
-    }
-
-    function hnm(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items=$(".page-content").children().eq(0).children().eq(1).children();
-            for(var i = 0; i < items.length; i++){
-                const itemLink = 'https://www2.hm.com' +  items.children().eq(i).children().eq(0).children().eq(0).attr('href');
-                const itemImg = 'http:' + items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('data-src');
-                const itemTitle = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('alt');
-                let itemPrice = items.children().eq(i).children().eq(1).children('.item-price').text();
-                itemPrice = itemPrice.replace(/\s+/g,"");
-                itemPrice = itemPrice.replace('$',"");
-                hnmSearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + "New" + ' | ' +  itemPrice + ' | ' + itemLink + '\n');
-            }
-            var allResult = '';
-            for (let i = 0; i < hnmSearchResult.length; i++) {
-                allResult = allResult.concat(hnmSearchResult[i]);
-            }
-            showResult.show(allResult, 'hnm');
-        });
-    }
-
 
     function craigslist(url) {
-        let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
-        function doCORSRequest(options, printResult) {
-            let x = new XMLHttpRequest();
-            x.open(options.method, cors_api_url + options.url);
-            x.onload = x.onerror = function () {
-                printResult(
-                    options.method + ' ' + options.url + '\n' +
-                    x.status + ' ' + x.statusText + '\n\n' +
-                    (x.responseText || '')
-                );
-            };
-            if (/^POST/i.test(options.method)) {
-                x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            }
-            x.send(options.data);
-        }
         // Bind event
         (function () {
             doCORSRequest({
@@ -546,52 +215,53 @@ window.scrape= function () {
                 const $ = cheerio.load(result);
                 let items = $('#sortable-results').children().eq(3).children();
                 console.log(items.length)
-                if(items.length<50){
+                if (items.length < 50) {
                     items = $('#sortable-results').children().eq(4).children();
                 }
                 console.log(items.length);
                 for (let i = 0; i < items.length; i++) {
                     let imgAvail = items.eq(i).children().eq(0).children();
                     if (imgAvail != 0) {
-                        const pLink = items.eq(i).children().eq(0).attr('href');
-                        let purl = 'https://cors-anywhere.herokuapp.com/';
-                        const result2 = fetch(`${purl + pLink}`).then(response => response.text())
-                        result2.then(body => {
-                            //console.log(body);
-                            const $ = cheerio.load(body);
-                            const pImg = $('.gallery').children().eq(3).children().eq(0).children().eq(0).children().eq(0).attr('src');
-                            const pName = $('#titletextonly').text();
-                            const pPrice = $('.price').text();
-                            const pCondition = 'used';
-                            showResult.show(pImg + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n', 'craigslist');
-                        })
+                        (function () {
+                            const url = items.eq(i).children().eq(0).attr('href');
+                            doCORSRequest({
+                                method: this.id === 'post' ? 'POST' : 'GET',
+                                url: url,
+                            }, function printResult(result) {
+                                const $ = cheerio.load(result);
+                                let pPrice = $('.price').text();
+                                if (pPrice != '') {
+                                    pPrice = pPrice.replace('$', '');
+                                    pPrice = Number(pPrice);
+                                    //console.log(pPrice);
+                                    const pImg = $('.gallery').children().eq(3).children().eq(0).children().eq(0).children().eq(0).attr('src');
+                                    const pName = $('#titletextonly').text();
+                                    const pWebsite = 'craigslist';
+
+                                    const pCondition = 'used';
+                                    ref.push({
+                                        pLink: url,
+                                        pName: pName,
+                                        img: pImg,
+                                        pPrice: pPrice,
+                                        pCondition: pCondition,
+                                        pWebsite: pWebsite
+                                    });
+                                }
+
+                            });
+
+                        })();
+
                     }
+
                 }
-                //showResult.show(allResult, 'craigslist');
             });
 
         })();
     }
 
     function walmart(url) {
-        let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
-
-        function doCORSRequest(options, printResult) {
-            let x = new XMLHttpRequest();
-            x.open(options.method, cors_api_url + options.url);
-            x.onload = x.onerror = function () {
-                printResult(
-                    options.method + ' ' + options.url + '\n' +
-                    x.status + ' ' + x.statusText + '\n\n' +
-                    (x.responseText || '')
-                );
-            };
-            if (/^POST/i.test(options.method)) {
-                x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            }
-            x.send(options.data);
-        }
-
 // Bind event
         (function () {
             doCORSRequest({
@@ -599,64 +269,219 @@ window.scrape= function () {
                 url: url,
             }, function printResult(result) {
                 const $ = cheerio.load(result);
-                let items= $('#searchContent').html().toString();
+                let items = $('#searchContent').html().toString();
                 //console.log(items);
-                let temp= items.split('{"productId":');
-                let r=[];
-                for(let i=1; i<35;i++){
-                    let t=[];
-                    /*  let pName;
-                      let img;
-                      let pLink='https://www.walmart.com';
-                      let pPrice='$';
-                      let pCondition='New';*/
-
-
-                    let temp2=temp[i].split(',')
-                    //console.log(temp2);
-                    //for title format
-                    //console.log(temp2)
-
-                    for(let i=0; i<temp2.length;i++){
-                        if(temp2[i].includes('productPageUrl')){
-                            temp2[i]=temp2[i].replace(/"productPageUrl":"|"/gi, "")
-                            temp2[i]='https://www.walmart.com'+temp2[i]
+                let temp = items.split('{"productId":');
+                let r = [];
+                for (let i = 1; i < 35; i++) {
+                    let t = [];
+                    let temp2 = temp[i].split(',')
+                    for (let i = 0; i < temp2.length; i++) {
+                        if (temp2[i].includes('productPageUrl')) {
+                            temp2[i] = temp2[i].replace(/"productPageUrl":"|"/gi, "")
+                            temp2[i] = 'https://www.walmart.com' + temp2[i]
+                            //console.log(temp2[i]);
                             t.push(temp2[i]);
                             break;
                         }
                     }
 
-                    //console.log(t);
-                    for(let i=0; i<t.length;i++){
+                    // console.log(t);
+                    for (let i = 0; i < t.length; i++) {
                         (function () {
-                            const url=t[i];
+                            const url = t[i];
                             doCORSRequest({
                                 method: this.id === 'post' ? 'POST' : 'GET',
-                                url:url,
+                                url: url,
                             }, function printResult(result) {
                                 //.log(result)
                                 const $ = cheerio.load(result);
                                 //console.log(result);
-                                let pName=$('.ProductTitle').children().eq(0).attr('content');
-                                pName=pName.substring(0,60);
-                                pName=pName.substring(0,Math.min(pName.length,pName.lastIndexOf(' ')));
-                                const pLink=url;
-                                const img=$('.prod-hero-image-carousel-image').attr('src');
-                                const pPrice=$('.price-characteristic').attr('content');
-                                const pCondition="New";
-                                //console.log(pPrice);
-                                //console.log(img);
-                                if(img!='undefined'){
-                                    showResult.show(img + ' | ' + pName + ' | ' + pCondition + ' | ' + pPrice + ' | ' + pLink + '\n', 'walmart');
+                                let pName = $('.ProductTitle').children().eq(0).attr('content');
+                                //console.log(pName);
+                                if (pName != null && pName != undefined) {
+                                    pName = pName.substring(0, 60);
+                                    pName = pName.substring(0, Math.min(pName.length, pName.lastIndexOf(' ')));
                                 }
+                                /*pName=pName.substring(0,60);
+                                pName=pName.substring(0,Math.min(pName.length,pName.lastIndexOf(' ')));*/
+                                const pLink = url;
+                                const img = $('.prod-hero-image-carousel-image').attr('src');
+                                let pPrice = $('.price-characteristic').attr('content');
+                                pPrice = pPrice.replace('$', '');
+                                pPrice = Number(pPrice);
+                                const pCondition = "New";
+                                const pWebsite = 'walmart';
+                                if (img != undefined && pName != undefined && pLink != undefined && pPrice != undefined) {
+                                    ref.push({
+                                        pLink: url,
+                                        pName: pName,
+                                        img: img,
+                                        pPrice: pPrice,
+                                        pCondition: pCondition,
+                                        pWebsite: pWebsite
+                                    });
+                                }
+
                             });
+
                         })();
+
+
                     }
+
                 }
+
             });
+
         })();
     }
 
+    function tradesy(url) {
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
+        result.then(body => {
+            const $ = cheerio.load(body);
+            const items = $("#items-container-grid").children();
+            for (var i = 0; i < items.length; i++) {
+                const itemnum = items.children().eq(i).children()
+                if (itemnum.length == 3) {
+                    const itemImg = items.children().eq(i).children().attr('data-category-want-image');
+                    const itemTitle = items.children().eq(i).children().attr('data-category-want-title');
+                    let itemPrice = items.children().eq(i).children().attr('data-category-want-price');
+                    itemPrice = Number(itemPrice);
+                    const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
+                    const itemCondition = "Used";
+                    const itemWebsite = "tradesy";
+                    ref.push({
+                        pLink: itemLink,
+                        pName: itemTitle,
+                        img: itemImg,
+                        pPrice: itemPrice,
+                        pCondition: itemCondition,
+                        pWebsite: itemWebsite
+
+                    });
+
+                } else if (itemnum.length == 4) {
+                    const itemImg = items.children().eq(i).children().eq(1).attr('data-category-want-image');
+                    const itemTitle = items.children().eq(i).children().eq(1).attr('data-category-want-title');
+                    let itemPrice = items.children().eq(i).children().eq(1).attr('data-category-want-price');
+                    itemPrice = Number(itemPrice);
+                    const itemCondition = "Used";
+                    const itemWebsite = "tradesy";
+                    const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(2).children().eq(1).attr('href');
+                    ref.push({
+                        pLink: itemLink,
+                        pName: itemTitle,
+                        img: itemImg,
+                        pPrice: itemPrice,
+                        pCondition: itemCondition,
+                        pWebsite: itemWebsite
+
+                    });
+
+                }
+            }
+        });
+    }
+
+    function poshmark(url) {
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
+        result.then(body => {
+            const $ = cheerio.load(body);
+            const items = $("#tiles-con").children();
+            for (var i = 0; i < items.length; i++) {
+                const itemTitle = items.children().eq(i).children().eq(0).attr('title')
+                let itemPrice = items.children().eq(i).attr('data-post-price');
+                const itemLink = 'https://poshmark.com' + items.children().eq(i).children().eq(0).attr('href')
+                const itemImg = items.children().eq(i).children().eq(0).children().attr('src')
+                itemPrice = itemPrice.replace('$', "");
+                itemPrice = Number(itemPrice);
+                const itemWebsite = "poshmark";
+                const itemCondition = 'New';
+                //poshmarkSearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + itemCondition + ' | ' + itemPrice + ' | ' + itemLink + '\n');
+                ref.push({
+                    pLink: itemLink,
+                    pName: itemTitle,
+                    img: itemImg,
+                    pPrice: itemPrice,
+                    pCondition: itemCondition,
+                    pWebsite: itemWebsite
+
+                });
+            }
+
+        });
+    }
+
+    function geebo(url) {
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
+        result.then(body => {
+            const $ = cheerio.load(body);
+            const items = $(".list_items").children();
+            for (var i = 2; i < 40; i++) {
+
+
+                const itemImg = items.children().eq(i).children().eq(1).children().eq(0).children().attr('src');
+                const itemLink = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children().eq(0).attr('href');
+                const itemTitle = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children('.title').text();
+                let itemPrice = items.children().eq(i).children().eq(1).children().eq(1).children('.price').text();
+
+                itemPrice = itemPrice.replace('$', "");
+                itemPrice = itemPrice.replace(',', "");
+                itemPrice = Number(itemPrice);
+                const itemWebsite = 'geebo';
+                const itemCondition = 'Used'
+                //console.log(itemPrice);
+                if (itemPrice != undefined && !isNaN(itemPrice) && itemImg != undefined && itemTitle != undefined && itemLink != undefined) {
+                    ref.push({
+                        pLink: itemLink,
+                        pName: itemTitle,
+                        img: itemImg,
+                        pPrice: itemPrice,
+                        pCondition: itemCondition,
+                        pWebsite: itemWebsite
+
+                    });
+                }
+            }
+        });
+    }
+
+    function hnm(url) {
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
+        result.then(body => {
+            const $ = cheerio.load(body);
+            const items = $(".page-content").children().eq(0).children().eq(1).children();
+            for (var i = 0; i < items.length; i++) {
+                const itemLink = 'https://www2.hm.com' + items.children().eq(i).children().eq(0).children().eq(0).attr('href');
+                const itemImg = 'http:' + items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('data-src');
+                const itemTitle = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('alt');
+                let itemPrice = items.children().eq(i).children().eq(1).children('.item-price').text();
+                itemPrice = itemPrice.replace(/\s+/g, "");
+                itemPrice = itemPrice.replace('$', "");
+                var n = itemPrice.indexOf('$');
+                itemPrice = itemPrice.substring(0, n != -1 ? n : itemPrice.length);
+                itemPrice = Number(itemPrice);
+                console.log(itemPrice)
+                const itemWebsite = 'hnm';
+                const itemCondition = 'New';
+                ref.push({
+                    pLink: itemLink,
+                    pName: itemTitle,
+                    img: itemImg,
+                    pPrice: itemPrice,
+                    pCondition: itemCondition,
+                    pWebsite: itemWebsite
+
+                });
+            }
+        });
+    }
 
 
     function waitForIt(N) {
@@ -665,13 +490,76 @@ window.scrape= function () {
         });
     };
 
+    let allitems = [];
+    let result;
     waitForIt(5000)
         .then(function () {
-            let out=ref.orderByValue();
-            out.once('value')
-                .then(function (snap) {
-                    console.log(snap.val(), '\n');
-                });
+            ref.on('value', gotData, errData);
+
         })
 
+    function gotData(data) {
+        result = data.val();
+        if (result != undefined) {
+            let keys = Object.keys(result);
+
+            for (let i = 0; i < keys.length; i++) {
+                let temp = [];
+                let k = keys[i];
+                temp.push(result[k].img);
+                temp.push(result[k].pName);
+                temp.push(result[k].pCondition);
+                temp.push(result[k].pPrice)
+                temp.push(result[k].pLink);
+                temp.push(result[k].pWebsite);
+                allitems.push(temp);
+            }
+            for (let i = 0; i < allitems.length - 1; i++) {
+                for (let j = 0; j < (allitems.length - i) - 1; j++) {
+                    if (allitems[j][3] > allitems[j + 1][3]) {
+                        let temp = allitems[j];
+                        allitems[j] = allitems[j + 1];
+                        allitems[j + 1] = temp;
+                    }
+                }
+            }
+            let modifiedList = [];
+            let finalList = '';
+            for (let i = 0; i < allitems.length; i++) {
+                let temp = '';
+                for (j = 0; j < allitems[i].length; j++) {
+                    if (j != allitems[i].length - 1) {
+                        temp = temp + allitems[i][j] + "|";
+                    } else {
+                        temp = temp + allitems[i][j];
+                    }
+                }
+                modifiedList.push(temp);
+            }
+
+            for (let i = 0; i < modifiedList.length; i++) {
+                if (i != modifiedList.length - 1) {
+                    finalList = finalList + modifiedList[i] + '\n';
+                } else {
+                    finalList = finalList + modifiedList[i];
+                }
+            }
+
+            showResult.show(finalList);
+
+            ref.remove().then(function () {
+                ref.onDisconnect();
+            });
+
+        }
+
+
+    }
+
+    function errData(err) {
+        console.log('error');
+    }
+
+
 }
+
