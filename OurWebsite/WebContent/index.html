@@ -30,9 +30,21 @@
 			//script for redirecting to search result wiht 'enter' key pressed
 			function enterPressed(e) {
 				var keycode = (e.keyCode ? e.keyCode : e.which);
+				let webName = '';
 				if(keycode=='13') {
+					let website=document.getElementById("storeButtons").children;
+					for(let i = 0; i < website.length; i++){
+						if(website[i].checked){
+							if(i!=(website.length - 1)){
+								webName = webName + website[i].value + "+";
+							}
+							else {
+								webName = webName + website[i].value;
+							}
+						}
+					}
 					let searchTerm= document.getElementById("box").value;
-					location.href = "searchPage.html" +"?"+searchTerm;
+					location.href = "searchPage.html" +"?"+searchTerm + "&" + webName;
 				}
 			}
 		</script>
@@ -43,7 +55,10 @@
 		<input type="checkbox" name="website2" value="Craigslist" checked="checked"> Craigslist DC </button>
 		<input type="checkbox" name="website4" value="MicroCenter" checked="checked"> Micro Center </button>
 		<input type="checkbox" name="website5" value="walmart" checked="checked"> Walmart </button>
-		<input type="checkbox" name="website6" value="newegg" checked="checked"> newegg </button>
+		<input type="checkbox" name="website5" value="hnm" checked="checked"> h&m </button>
+		<input type="checkbox" name="website6" value="poshmark" checked="checked"> Poshmark </button>
+		<input type="checkbox" name="website7" value="tradesy" checked="checked"> Tradesy </button>
+		<input type="checkbox" name="website8" value="geebo" checked="checked"> geebo </button>
 	</div>
 </body>
 </div>
