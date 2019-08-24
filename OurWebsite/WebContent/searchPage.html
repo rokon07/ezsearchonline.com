@@ -18,7 +18,7 @@
 </header>
 
 <div class="topBar" style="height: 100px; width: 100%; ">
-	<div class="logo" onclick="window.location.href='index.html'" style = "">
+	<div class="logo" onclick="window.location.href='index.html'" style = "cursor: pointer;">
 		<img class="mainlogo" src="logo.png" alt="logo">
 	</div>
 	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:30%; height:40px; margin-top: 28px;
@@ -65,10 +65,10 @@
 			</select>
 		</li>
 
-		<li>Price: $ <input id="minPrice" type="text" placeholder="  Min" name="search"
-						  style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black;"/> to $
-					<input id="maxPrice" type="text" placeholder="  Max" name="search"
-						   style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black;"/></li>
+		<li>Price: $ <input id="minPrice" type="text" placeholder="Min" name="search"
+						  style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black; padding-left:10px;"/> to $
+					<input id="maxPrice" type="text" placeholder="Max" name="search"
+						   style="width:50px; height:30px; border: 1px; border-radius: 4px; color: black; padding-left:10px;"/></li>
 		<li id="websitelists">Websites: <br><input id="ebay" type="checkbox" name="website1" value="Ebay"> Ebay </button>
 			<br><input id="craigslist" type="checkbox" name="website2" value="Craigslist"> Craigslist DC </button>
 			<br><input id="microcenter" type="checkbox" name="website3" value="MicroCenter"> Micro Center </button>
@@ -79,6 +79,9 @@
 
 			<br><button id="refineButton" type="submit" onclick="refineSearch()">Refine Search</button>
 		</li>
+		<div class="cp" style="position: fixed; bottom:0%; color: white; margin-left: 20px; margin-bottom: 5px;">
+			© Mohd Rokon / Touhid Nuhash
+		</div>
 		<script>
 			function refineSearch() {
 				let website=document.getElementById("websitelists").children;
@@ -99,7 +102,6 @@
 				let selectedValue = sortOpt.options[sortOpt.selectedIndex].value;
 				location.href = "searchPage.html" +"?"+searchTerm + "&"+ webName +'~'+minPrice+'-'+maxPrice+ "-" +selectedValue;
 			}
-
 		</script>
 	</ul>
 </div>
@@ -119,6 +121,9 @@
 </div>-->
 	<div id="loader">
 		<img id= "load" src="loading.gif" alt="loading ... ">
+		<div class="loadtext" style="padding-top: 10px; margin-left: -10px;">
+			Loading Items ...
+		</div>
 	</div>
 	<script type="text/javascript">
 		(function(){
@@ -153,7 +158,9 @@
 		document.body.scrollTop = 0; // For Safari
 		document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 	}
+	</script>
+	<!--
 	<footer>
 	© Mohd Rokon / Touhid Nuhash
-	</footer>
+</footer> -->
 	</html>

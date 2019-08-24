@@ -169,21 +169,25 @@ footer{
   background-color: #00b386;
 }
 
-#load{
+#loader{
   position: fixed;
   z-index: 99;
   top: 40%;
   left: 50%;
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#loader img{
+  width: 80px;
+  height: auto;
 }
 
 #sort{
   color: black;
   margin-left: 10px;
   font-size: 15px;
-
 }
