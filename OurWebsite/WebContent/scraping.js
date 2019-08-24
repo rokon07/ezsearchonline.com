@@ -15,11 +15,18 @@ window.scrape = function () {
         let x = new XMLHttpRequest();
         x.open(options.method, cors_api_url + options.url);
         x.onload = x.onerror = function () {
-            printResult(
+            if(x.status=='200'){
+                printResult(
+                    options.method + ' ' + options.url + '\n' +
+                    x.status + ' ' + x.statusText + '\n\n' +
+                    (x.responseText || '')
+                );
+            }
+            /*printResult(
                 options.method + ' ' + options.url + '\n' +
                 x.status + ' ' + x.statusText + '\n\n' +
                 (x.responseText || '')
-            );
+            );*/
         };
         if (/^POST/i.test(options.method)) {
             x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
