@@ -10,56 +10,55 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<title>eZSearch</title>
 	<div class="whitebox">
-	<header>
-		<img id="mainlogo" src="logo.png" alt="logo">
-	</header>
-</head>
+		<header>
+			<img id="mainlogo" src="logo.png" alt="logo">
+		</header>
+		</head>
 <body>
-	<div class="Intro"> <!-- Added a Disc -->
-		This website allows users to search from a variety of E-commerce websites. This is an all in one website
-		<br> making searhing for used and new goods easier for the user. It frees the user form having the trouble of going to multiple
-		<br> sites to find listing for items they desire.
-	</div>
-
-
-	<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 10px;">
-		<img src="searchLogo.png" style="height: 22px; width: auto; margin-right: 5px; margin-bottom: 2px;"/>
-		<input id="box" type="search" placeholder="Search for an Item ..." onkeypress="enterPressed(event)"
-		style="font-family: work-sans; border: 0px; width:720px; height:36px; display: inline; /*background: white;/*"/>
-		<script>
-			//script for redirecting to search result wiht 'enter' key pressed
-			function enterPressed(e) {
-				var keycode = (e.keyCode ? e.keyCode : e.which);
-				let webName = '';
-				if(keycode=='13') {
-					let website=document.getElementById("storeButtons").children;
-					for(let i = 0; i < website.length; i++){
-						if(website[i].checked){
-							if(i!=(website.length - 1)){
-								webName = webName + website[i].value + "+";
-							}
-							else {
-								webName = webName + website[i].value;
-							}
-						}
-					}
-					let searchTerm= document.getElementById("box").value;
-					location.href = "searchPage.html" +"?"+searchTerm + "&" + webName;
-				}
-			}
-		</script>
+<div class="Intro"> <!-- Added a Disc -->
+	This website allows users to search from a variety of E-commerce websites. This is an all in one website
+	<br> making searhing for used and new goods easier for the user. It frees the user form having the trouble of going to multiple
+	<br> sites to find listing for items they desire.
 </div>
 
-	<div id="storeButtons" style="width:100%"> <!-- Buttons for options -->
-		<input type="checkbox" name="website3" value="Ebay" checked="checked"> Ebay </button>
-		<input type="checkbox" name="website2" value="Craigslist" checked="checked"> Craigslist DC </button>
-		<input type="checkbox" name="website4" value="MicroCenter" checked="checked"> Micro Center </button>
-		<input type="checkbox" name="website5" value="walmart" checked="checked"> Walmart </button>
-		<input type="checkbox" name="website5" value="hnm" checked="checked"> h&m </button>
-		<input type="checkbox" name="website6" value="poshmark" checked="checked"> Poshmark </button>
-		<input type="checkbox" name="website7" value="tradesy" checked="checked"> Tradesy </button>
-		<input type="checkbox" name="website8" value="geebo" checked="checked"> geebo </button>
-	</div>
+
+<div id="searchBar" style="font-family: work-sans; border: 2px solid #ccc; border-radius: 20px; width:800px; height:40px; margin-top: 10px;">
+	<img src="searchLogo.png" style="height: 22px; width: auto; margin-right: 5px; margin-bottom: 2px;"/>
+	<input id="box" type="search" placeholder="Search for an Item ..." onkeypress="enterPressed(event)"
+		   style="font-family: work-sans; border: 0px; width:720px; height:36px; display: inline; /*background: white;/*"/>
+	<script>
+		//script for redirecting to search result wiht 'enter' key pressed
+		function enterPressed(e) {
+			var keycode = (e.keyCode ? e.keyCode : e.which);
+			let webName = '';
+			if(keycode=='13') {
+				let website=document.getElementById("storeButtons").children;
+				for(let i = 0; i < website.length; i++){
+					if(website[i].checked){
+						if(i!=(website.length - 1)){
+							webName = webName + website[i].value + "+";
+						}
+						else {
+							webName = webName + website[i].value;
+						}
+					}
+				}
+				let searchTerm= document.getElementById("box").value;
+				location.href = "searchPage.html" +"?"+searchTerm + "&" + webName;
+			}
+		}
+	</script>
+</div>
+
+<div id="storeButtons" style="width:100%"> <!-- Buttons for options -->
+	<input type="checkbox" name="website3" value="Ebay" checked="checked"> Ebay </button>
+	<input type="checkbox" name="website2" value="Craigslist" checked="checked"> Craigslist DC </button>
+	<input type="checkbox" name="website4" value="MicroCenter" checked="checked"> Micro Center </button>
+	<input type="checkbox" name="website5" value="walmart" checked="checked"> Walmart </button>
+	<input type="checkbox" name="website5" value="hnm" checked="checked"> h&m </button>
+	<input type="checkbox" name="website6" value="poshmark" checked="checked"> Poshmark </button>
+	<input type="checkbox" name="website7" value="tradesy" checked="checked"> Tradesy </button>
+</div>
 </body>
 </div>
 <footer>

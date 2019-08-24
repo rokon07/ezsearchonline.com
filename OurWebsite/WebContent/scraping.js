@@ -9,7 +9,7 @@ window.scrape = function () {
     });
 
 
-    let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+    const cors_api_url = 'https://ezsearchonlineproxy.herokuapp.com/';
 
     function doCORSRequest(options, printResult) {
         let x = new XMLHttpRequest();
@@ -41,18 +41,52 @@ window.scrape = function () {
 
 
     let search = window.location.href; //get the url
+    //console.log(search);
+
 
     let temp = search.toString().split("?"); //splits the url to extract info
+    //console.log(temp);
     let sTerm = temp[1].split("&"); //get splits the searcgtitle and website [0]=searchtitle, [1]=websites
-
+    //console.log(sTerm);
     let SearchTitle = sTerm[0].replace(/%20/gi, '+');
     let searchBarText = sTerm[0].replace(/%20/gi, ' ');
 
+    let checkedWebsites = sTerm[1].split("+");
+    //console.log(checkedWebsites);
+    //getting the price limit filter
+    let priceLimitText=[];
+    let pricelimit=[];
+    let sort='acending';
+    if(sTerm[1].includes('~')){
+        priceLimitText = sTerm[1].split('~');
+        console.log(priceLimitText);
+        pricelimit = priceLimitText[1].split('-');
+        sort = pricelimit[2];
+    }
+
+    let minPrice = 0;
+    let maxPrice = 0;
+
+
+    if (sort == 'decending') {
+        document.getElementById("decending").selected = "true";
+    } else {
+        document.getElementById("ascending").selected = "true";
+    }
+
+
+    if (pricelimit[0] != undefined && pricelimit[1] != undefined) {
+        document.getElementById('minPrice').setAttribute('value', pricelimit[0]);
+        document.getElementById('maxPrice').setAttribute('value', pricelimit[1]);
+        minPrice = Number(pricelimit[0]);
+        maxPrice = Number(pricelimit[1]);
+        console.log(minPrice);
+        console.log(maxPrice);
+    }
+
+
     document.getElementById("box").setAttribute("value", searchBarText);
 
-    console.log(sTerm[1]);
-    let checkedWebsites = sTerm[1].split("+");
-    console.log(checkedWebsites);
 
     for (let i = 0; i < checkedWebsites.length; i++) {
         switch (checkedWebsites[i]) {
@@ -68,14 +102,8 @@ window.scrape = function () {
             case "walmart":
                 document.getElementById("walmart").setAttribute("checked", "checked");
                 break;
-            case "tradesy":
-                document.getElementById("tradesy").setAttribute("checked", "checked");
-                break;
             case "hnm":
                 document.getElementById("hnm").setAttribute("checked", "checked");
-                break;
-            case "geebo":
-                document.getElementById("geebo").setAttribute("checked", "checked");
                 break;
             case "poshmark":
                 document.getElementById("poshmark").setAttribute("checked", "checked");
@@ -96,113 +124,174 @@ window.scrape = function () {
     const poshmarkUrl = 'https://poshmark.com/search?query=' + SearchTitle + '&type=listings&ac=true';
     const tradesyUrl = 'https://www.tradesy.com/search?q=' + SearchTitle;
 
-
-    if (document.getElementById("ebay").checked) {
-        ebay(ebayUrl);
-    }
-    if (document.getElementById("microcenter").checked) {
-        micro(microCenterUrl);
-    }
-    if (document.getElementById("craigslist").checked) {
-        craigslist(craigslistUrl);
-    }
-    if (document.getElementById("walmart").checked) {
-        walmart(walmartUrl);
-    }
-    if (document.getElementById("hnm").checked) {
-        hnm(hnmUrl);
-    }
-    if (document.getElementById("geebo").checked) {
-        geebo(geeboUrl);
-    }
-    if (document.getElementById("poshmark").checked) {
-        poshmark(poshmarkUrl);
-    }
-    if (document.getElementById("tradesy").checked) {
-        tradesy(tradesyUrl);
+    if (SearchTitle != '') {
+        if (document.getElementById("ebay").checked) {
+            ebay(ebayUrl);
+        }
+        if (document.getElementById("microcenter").checked) {
+            micro(microCenterUrl);
+        }
+        if (document.getElementById("craigslist").checked) {
+            craigslist(craigslistUrl);
+        }
+        if (document.getElementById("walmart").checked) {
+            walmart(walmartUrl);
+        }
+        if (document.getElementById("hnm").checked) {
+            hnm(hnmUrl);
+        }
+        if (document.getElementById("poshmark").checked) {
+            poshmark(poshmarkUrl);
+        }
+        if (document.getElementById("tradesy").checked) {
+            tradesy(tradesyUrl);
+        }
     }
 
 
     function ebay(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $('#srp-river-main').children().eq(1).children().eq(0).children('.s-item');
-            for (var i = 0; i < items.length; i++) {
-                const Plink = items.children().eq(i).children().eq(1).children('.s-item__link').attr('href'); //gets the urls for all the results displayed in the search
-                var img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('data-src');
-                if (img == undefined) {
-                    img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('src');
-                }
-                var name = items.children().eq(i).children().eq(1).children('.s-item__link').children().eq(0).children('.BOLD').text();
-                if (name == '') {
-                    name = items.children().eq(i).children().eq(1).children('.s-item__link').children('.s-item__title').text();
-                }
 
-                const condition = items.children().eq(i).children().eq(1).children('.s-item__subtitle').children('.SECONDARY_INFO').text();
-                let price = items.children().eq(i).children().eq(1).children().eq(3).children().eq(0).children('.s-item__price').text();
-                if (price == '') {
-                    price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
-                    if (price == '') {
-                        price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                const items = $('#srp-river-main').children().eq(1).children().eq(0).children('.s-item');
+                for (var i = 0; i < items.length; i++) {
+
+                    if (minPrice != 0 && maxPrice != 0) {
+                        let price = items.children().eq(i).children().eq(1).children().eq(3).children().eq(0).children('.s-item__price').text();
+                        if (price == '') {
+                            price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
+                            if (price == '') {
+                                price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
+                            }
+                        }
+                        //price=price.replace("$", '');
+                        var n = price.indexOf('t');
+                        price = price.substring(0, n != -1 ? n : price.length);
+                        price = price.replace("$", '');
+                        price = Number(price);
+                        if (price >= minPrice && price <= maxPrice) {
+                            const Plink = items.children().eq(i).children().eq(1).children('.s-item__link').attr('href'); //gets the urls for all the results displayed in the search
+                            var img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('data-src');
+                            if (img == undefined) {
+                                img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('src');
+                            }
+                            var name = items.children().eq(i).children().eq(1).children('.s-item__link').children().eq(0).children('.BOLD').text();
+                            if (name == '') {
+                                name = items.children().eq(i).children().eq(1).children('.s-item__link').children('.s-item__title').text();
+                            }
+
+                            const condition = items.children().eq(i).children().eq(1).children('.s-item__subtitle').children('.SECONDARY_INFO').text();
+                            const pWebsite = 'ebay';
+                            ref.push({
+                                pLink: Plink,
+                                pName: name,
+                                img: img,
+                                pPrice: price,
+                                pCondition: condition,
+                                pWebsite: pWebsite
+
+                            });
+                        }
+                    } else {
+                        let price = items.children().eq(i).children().eq(1).children().eq(3).children().eq(0).children('.s-item__price').text();
+                        if (price == '') {
+                            price = items.children().eq(i).children().eq(1).children().eq(4).children().eq(0).children('.s-item__price').text();
+                            if (price == '') {
+                                price = items.children().eq(i).children().eq(1).children().eq(5).children().eq(0).children('.s-item__price').text();
+                            }
+                        }
+                        //price=price.replace("$", '');
+                        let n = price.indexOf('t');
+                        price = price.substring(0, n != -1 ? n : price.length);
+                        price = price.replace("$", '');
+                        price = Number(price);
+                        const Plink = items.children().eq(i).children().eq(1).children('.s-item__link').attr('href'); //gets the urls for all the results displayed in the search
+                        var img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('data-src');
+                        if (img == undefined) {
+                            img = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).children('.s-item__image-wrapper').children('.s-item__image-img').attr('src');
+                        }
+                        var name = items.children().eq(i).children().eq(1).children('.s-item__link').children().eq(0).children('.BOLD').text();
+                        if (name == '') {
+                            name = items.children().eq(i).children().eq(1).children('.s-item__link').children('.s-item__title').text();
+                        }
+
+                        const condition = items.children().eq(i).children().eq(1).children('.s-item__subtitle').children('.SECONDARY_INFO').text();
+                        const pWebsite = 'ebay';
+                        ref.push({
+                            pLink: Plink,
+                            pName: name,
+                            img: img,
+                            pPrice: price,
+                            pCondition: condition,
+                            pWebsite: pWebsite
+
+                        });
                     }
                 }
-                //price=price.replace("$", '');
-                var n = price.indexOf('t');
-                price = price.substring(0, n != -1 ? n : price.length);
-                price = price.replace("$", '');
-                price = Number(price);
-                const pWebsite = 'ebay';
-                //file.write(img +' | '+ name +' | '+ condition + '| ' + price + ' | '+ Plink +'\n');
-                //ebaySearchResult.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink + '\n');
-                ref.push({
-                    pLink: Plink,
-                    pName: name,
-                    img: img,
-                    pPrice: price,
-                    pCondition: condition,
-                    pWebsite: pWebsite
 
-                });
-                //ref.push(img + ' | ' + name + ' | ' + condition + '| ' + price + ' | ' + Plink);
-            }
-        });
+            });
+
+        })();
+
     }
 
     function micro(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $('#productGrid').children().eq(3).children('.product_wrapper');
-            for (var j = 0; j < items.length * 2; j += 2) {
-                const Plink = 'https://www.microcenter.com' + items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
-                const Pname = items.children().eq(j).children().eq(1).attr('data-name');
-                let Pprice = items.children().eq(j).children().eq(1).attr('data-price');
-                Pprice = Number(Pprice);
-                const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
-                const pCondition = 'New';
-                const pWebsite = 'microcenter'
-                //link
-                //microCenterSearchResult.push(Pimg + ' | ' + Pname + ' | ' + pCondition + ' | ' + Pprice + ' | ' + Plink + '\n');
-                ref.push({
-                    pLink: Plink,
-                    pName: Pname,
-                    img: Pimg,
-                    pPrice: Pprice,
-                    pCondition: pCondition,
-                    pWebsite: pWebsite
-                });
-            }
 
-            /*var allResult = '';
-            for (let i = 0; i < microCenterSearchResult.length; i++) {
-                allResult = allResult.concat(microCenterSearchResult[i]);
-            }
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                const items = $('#productGrid').children().eq(3).children('.product_wrapper');
+                for (let j = 0; j < items.length * 2; j += 2) {
+                    if (minPrice != 0 && maxPrice != 0) {
+                        let Pprice = items.children().eq(j).children().eq(1).attr('data-price');
+                        Pprice = Number(Pprice);
+                        if (Pprice >= minPrice && Pprice <= maxPrice) {
+                            const Plink = 'https://www.microcenter.com' + items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
+                            const Pname = items.children().eq(j).children().eq(1).attr('data-name');
+                            const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
+                            const pCondition = 'New';
+                            const pWebsite = 'microcenter';
 
-            showResult.show(allResult, 'microcenter');*/
-        });
+                            ref.push({
+                                pLink: Plink,
+                                pName: Pname,
+                                img: Pimg,
+                                pPrice: Pprice,
+                                pCondition: pCondition,
+                                pWebsite: pWebsite
+                            });
+                        }
+                    } else {
+                        const Plink = 'https://www.microcenter.com' + items.children().eq(j).children().eq(1).attr('href'); //https://www.microcenter.com + href
+                        const Pname = items.children().eq(j).children().eq(1).attr('data-name');
+                        let Pprice = items.children().eq(j).children().eq(1).attr('data-price');
+                        Pprice = Number(Pprice);
+                        const Pimg = items.children().eq(j).children().eq(1).children().attr('src');
+                        const pCondition = 'New';
+                        const pWebsite = 'microcenter';
+
+                        ref.push({
+                            pLink: Plink,
+                            pName: Pname,
+                            img: Pimg,
+                            pPrice: Pprice,
+                            pCondition: pCondition,
+                            pWebsite: pWebsite
+                        });
+                    }
+                }
+
+            });
+
+        })();
+
     }
 
     function craigslist(url) {
@@ -229,24 +318,48 @@ window.scrape = function () {
                                 url: url,
                             }, function printResult(result) {
                                 const $ = cheerio.load(result);
-                                let pPrice = $('.price').text();
-                                if (pPrice != '') {
-                                    pPrice = pPrice.replace('$', '');
-                                    pPrice = Number(pPrice);
-                                    //console.log(pPrice);
-                                    const pImg = $('.gallery').children().eq(3).children().eq(0).children().eq(0).children().eq(0).attr('src');
-                                    const pName = $('#titletextonly').text();
-                                    const pWebsite = 'craigslist';
+                                if (minPrice != 0 && maxPrice != 0) {
+                                    let pPrice = $('.price').text();
+                                    if (pPrice != '') {
+                                        pPrice = pPrice.replace('$', '');
+                                        pPrice = Number(pPrice);
+                                        if (pPrice >= minPrice && pPrice <= maxPrice) {
+                                            const pImg = $('.gallery').children().eq(3).children().eq(0).children().eq(0).children().eq(0).attr('src');
+                                            const pName = $('#titletextonly').text();
+                                            const pWebsite = 'craigslist';
 
-                                    const pCondition = 'used';
-                                    ref.push({
-                                        pLink: url,
-                                        pName: pName,
-                                        img: pImg,
-                                        pPrice: pPrice,
-                                        pCondition: pCondition,
-                                        pWebsite: pWebsite
-                                    });
+                                            const pCondition = 'used';
+                                            ref.push({
+                                                pLink: url,
+                                                pName: pName,
+                                                img: pImg,
+                                                pPrice: pPrice,
+                                                pCondition: pCondition,
+                                                pWebsite: pWebsite
+                                            });
+                                        }
+                                    }
+
+                                } else {
+                                    let pPrice = $('.price').text();
+                                    if (pPrice != '') {
+                                        pPrice = pPrice.replace('$', '');
+                                        pPrice = Number(pPrice);
+                                        //console.log(pPrice);
+                                        const pImg = $('.gallery').children().eq(3).children().eq(0).children().eq(0).children().eq(0).attr('src');
+                                        const pName = $('#titletextonly').text();
+                                        const pWebsite = 'craigslist';
+
+                                        const pCondition = 'used';
+                                        ref.push({
+                                            pLink: url,
+                                            pName: pName,
+                                            img: pImg,
+                                            pPrice: pPrice,
+                                            pCondition: pCondition,
+                                            pWebsite: pWebsite
+                                        });
+                                    }
                                 }
 
                             });
@@ -275,7 +388,7 @@ window.scrape = function () {
                 let r = [];
                 for (let i = 1; i < 35; i++) {
                     let t = [];
-                    let temp2 = temp[i].split(',')
+                    let temp2 = temp[i].split(',');
                     for (let i = 0; i < temp2.length; i++) {
                         if (temp2[i].includes('productPageUrl')) {
                             temp2[i] = temp2[i].replace(/"productPageUrl":"|"/gi, "")
@@ -285,8 +398,6 @@ window.scrape = function () {
                             break;
                         }
                     }
-
-                    // console.log(t);
                     for (let i = 0; i < t.length; i++) {
                         (function () {
                             const url = t[i];
@@ -296,33 +407,60 @@ window.scrape = function () {
                             }, function printResult(result) {
                                 //.log(result)
                                 const $ = cheerio.load(result);
-                                //console.log(result);
-                                let pName = $('.ProductTitle').children().eq(0).attr('content');
-                                //console.log(pName);
-                                if (pName != null && pName != undefined) {
-                                    pName = pName.substring(0, 60);
-                                    pName = pName.substring(0, Math.min(pName.length, pName.lastIndexOf(' ')));
+                                if (minPrice != 0 && maxPrice != 0) {
+                                    let pPrice = $('.price-characteristic').attr('content');
+                                    if (pPrice != '') {
+                                        pPrice = pPrice.replace('$', '');
+                                        pPrice = Number(pPrice);
+                                        if (pPrice >= minPrice && pPrice <= maxPrice) {
+                                            let pName = $('.ProductTitle').children().eq(0).attr('content');
+                                            if (pName != null && pName != undefined) {
+                                                pName = pName.substring(0, 60);
+                                                pName = pName.substring(0, Math.min(pName.length, pName.lastIndexOf(' ')));
+                                                const pLink = url;
+                                                const img = $('.prod-hero-image-carousel-image').attr('src');
+                                                const pCondition = "New";
+                                                const pWebsite = 'walmart';
+                                                if (img != undefined && pName != undefined && pLink != undefined && pPrice != undefined) {
+                                                    ref.push({
+                                                        pLink: url,
+                                                        pName: pName,
+                                                        img: img,
+                                                        pPrice: pPrice,
+                                                        pCondition: pCondition,
+                                                        pWebsite: pWebsite
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    let pName = $('.ProductTitle').children().eq(0).attr('content');
+                                    //console.log(pName);
+                                    if (pName != null && pName != undefined) {
+                                        pName = pName.substring(0, 60);
+                                        pName = pName.substring(0, Math.min(pName.length, pName.lastIndexOf(' ')));
+                                    }
+                                    /*pName=pName.substring(0,60);
+                                    pName=pName.substring(0,Math.min(pName.length,pName.lastIndexOf(' ')));*/
+                                    const pLink = url;
+                                    const img = $('.prod-hero-image-carousel-image').attr('src');
+                                    let pPrice = $('.price-characteristic').attr('content');
+                                    pPrice = pPrice.replace('$', '');
+                                    pPrice = Number(pPrice);
+                                    const pCondition = "New";
+                                    const pWebsite = 'walmart';
+                                    if (img != undefined && pName != undefined && pLink != undefined && pPrice != undefined) {
+                                        ref.push({
+                                            pLink: url,
+                                            pName: pName,
+                                            img: img,
+                                            pPrice: pPrice,
+                                            pCondition: pCondition,
+                                            pWebsite: pWebsite
+                                        });
+                                    }
                                 }
-                                /*pName=pName.substring(0,60);
-                                pName=pName.substring(0,Math.min(pName.length,pName.lastIndexOf(' ')));*/
-                                const pLink = url;
-                                const img = $('.prod-hero-image-carousel-image').attr('src');
-                                let pPrice = $('.price-characteristic').attr('content');
-                                pPrice = pPrice.replace('$', '');
-                                pPrice = Number(pPrice);
-                                const pCondition = "New";
-                                const pWebsite = 'walmart';
-                                if (img != undefined && pName != undefined && pLink != undefined && pPrice != undefined) {
-                                    ref.push({
-                                        pLink: url,
-                                        pName: pName,
-                                        img: img,
-                                        pPrice: pPrice,
-                                        pCondition: pCondition,
-                                        pWebsite: pWebsite
-                                    });
-                                }
-
                             });
 
                         })();
@@ -338,149 +476,220 @@ window.scrape = function () {
     }
 
     function tradesy(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $("#items-container-grid").children();
-            for (var i = 0; i < items.length; i++) {
-                const itemnum = items.children().eq(i).children()
-                if (itemnum.length == 3) {
-                    const itemImg = items.children().eq(i).children().attr('data-category-want-image');
-                    const itemTitle = items.children().eq(i).children().attr('data-category-want-title');
-                    let itemPrice = items.children().eq(i).children().attr('data-category-want-price');
-                    itemPrice = Number(itemPrice);
-                    const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
-                    const itemCondition = "Used";
-                    const itemWebsite = "tradesy";
-                    ref.push({
-                        pLink: itemLink,
-                        pName: itemTitle,
-                        img: itemImg,
-                        pPrice: itemPrice,
-                        pCondition: itemCondition,
-                        pWebsite: itemWebsite
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                const items = $("#items-container-grid").children();
+                for (var i = 0; i < items.length; i++) {
+                    const itemnum = items.children().eq(i).children()
+                    if (itemnum.length == 3) {
+                        if (minPrice != 0 && maxPrice != 0) {
+                            let itemPrice = items.children().eq(i).children().attr('data-category-want-price');
+                            itemPrice = Number(itemPrice);
+                            if (itemPrice >= minPrice && itemPrice <= maxPrice) {
+                                const itemImg = items.children().eq(i).children().attr('data-category-want-image');
+                                const itemTitle = items.children().eq(i).children().attr('data-category-want-title');
+                                itemPrice = Number(itemPrice);
+                                const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
+                                const itemCondition = "Used";
+                                const itemWebsite = "tradesy";
+                                ref.push({
+                                    pLink: itemLink,
+                                    pName: itemTitle,
+                                    img: itemImg,
+                                    pPrice: itemPrice,
+                                    pCondition: itemCondition,
+                                    pWebsite: itemWebsite
 
-                    });
+                                });
+                            }
+                        } else {
+                            const itemImg = items.children().eq(i).children().attr('data-category-want-image');
+                            const itemTitle = items.children().eq(i).children().attr('data-category-want-title');
+                            let itemPrice = items.children().eq(i).children().attr('data-category-want-price');
+                            itemPrice = Number(itemPrice);
+                            const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(1).children().eq(1).attr('href');
+                            const itemCondition = "Used";
+                            const itemWebsite = "tradesy";
+                            ref.push({
+                                pLink: itemLink,
+                                pName: itemTitle,
+                                img: itemImg,
+                                pPrice: itemPrice,
+                                pCondition: itemCondition,
+                                pWebsite: itemWebsite
 
-                } else if (itemnum.length == 4) {
-                    const itemImg = items.children().eq(i).children().eq(1).attr('data-category-want-image');
-                    const itemTitle = items.children().eq(i).children().eq(1).attr('data-category-want-title');
-                    let itemPrice = items.children().eq(i).children().eq(1).attr('data-category-want-price');
-                    itemPrice = Number(itemPrice);
-                    const itemCondition = "Used";
-                    const itemWebsite = "tradesy";
-                    const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(2).children().eq(1).attr('href');
-                    ref.push({
-                        pLink: itemLink,
-                        pName: itemTitle,
-                        img: itemImg,
-                        pPrice: itemPrice,
-                        pCondition: itemCondition,
-                        pWebsite: itemWebsite
+                            });
+                        }
+                    } else if (itemnum.length == 4) {
+                        if (minPrice != 0 && maxPrice != 0) {
+                            let itemPrice = items.children().eq(i).children().eq(1).attr('data-category-want-price');
+                            itemPrice = Number(itemPrice);
+                            if (itemPrice >= minPrice && itemPrice <= maxPrice) {
+                                const itemImg = items.children().eq(i).children().eq(1).attr('data-category-want-image');
+                                const itemTitle = items.children().eq(i).children().eq(1).attr('data-category-want-title');
+                                itemPrice = Number(itemPrice);
+                                const itemCondition = "Used";
+                                const itemWebsite = "tradesy";
+                                const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(2).children().eq(1).attr('href');
+                                ref.push({
+                                    pLink: itemLink,
+                                    pName: itemTitle,
+                                    img: itemImg,
+                                    pPrice: itemPrice,
+                                    pCondition: itemCondition,
+                                    pWebsite: itemWebsite
 
-                    });
+                                });
+                            }
+                        } else {
+                            const itemImg = items.children().eq(i).children().eq(1).attr('data-category-want-image');
+                            const itemTitle = items.children().eq(i).children().eq(1).attr('data-category-want-title');
+                            let itemPrice = items.children().eq(i).children().eq(1).attr('data-category-want-price');
+                            itemPrice = Number(itemPrice);
+                            const itemCondition = "Used";
+                            const itemWebsite = "tradesy";
+                            const itemLink = 'https://www.tradesy.com' + items.children().eq(i).children().eq(2).children().eq(1).attr('href');
+                            ref.push({
+                                pLink: itemLink,
+                                pName: itemTitle,
+                                img: itemImg,
+                                pPrice: itemPrice,
+                                pCondition: itemCondition,
+                                pWebsite: itemWebsite
 
+                            });
+
+                        }
+
+                    }
                 }
-            }
-        });
+
+            });
+
+        })();
     }
 
     function poshmark(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $("#tiles-con").children();
-            for (var i = 0; i < items.length; i++) {
-                const itemTitle = items.children().eq(i).children().eq(0).attr('title')
-                let itemPrice = items.children().eq(i).attr('data-post-price');
-                const itemLink = 'https://poshmark.com' + items.children().eq(i).children().eq(0).attr('href')
-                const itemImg = items.children().eq(i).children().eq(0).children().attr('src')
-                itemPrice = itemPrice.replace('$', "");
-                itemPrice = Number(itemPrice);
-                const itemWebsite = "poshmark";
-                const itemCondition = 'New';
-                //poshmarkSearchResult.push(itemImg + ' | ' + itemTitle + ' | ' + itemCondition + ' | ' + itemPrice + ' | ' + itemLink + '\n');
-                ref.push({
-                    pLink: itemLink,
-                    pName: itemTitle,
-                    img: itemImg,
-                    pPrice: itemPrice,
-                    pCondition: itemCondition,
-                    pWebsite: itemWebsite
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                const items = $("#tiles-con").children();
+                for (var i = 0; i < items.length; i++) {
+                    if (minPrice != 0 && maxPrice != 0) {
+                        let itemPrice = items.children().eq(i).attr('data-post-price');
+                        itemPrice = itemPrice.replace('$', "");
+                        itemPrice = Number(itemPrice);
+                        if (itemPrice >= minPrice && itemPrice <= maxPrice) {
+                            const itemTitle = items.children().eq(i).children().eq(0).attr('title')
+                            const itemLink = 'https://poshmark.com' + items.children().eq(i).children().eq(0).attr('href')
+                            const itemImg = items.children().eq(i).children().eq(0).children().attr('src')
+                            const itemWebsite = "poshmark";
+                            const itemCondition = 'New';
+                            ref.push({
+                                pLink: itemLink,
+                                pName: itemTitle,
+                                img: itemImg,
+                                pPrice: itemPrice,
+                                pCondition: itemCondition,
+                                pWebsite: itemWebsite
 
-                });
-            }
+                            });
+                        }
+                    } else {
+                        const itemTitle = items.children().eq(i).children().eq(0).attr('title')
+                        let itemPrice = items.children().eq(i).attr('data-post-price');
+                        const itemLink = 'https://poshmark.com' + items.children().eq(i).children().eq(0).attr('href')
+                        const itemImg = items.children().eq(i).children().eq(0).children().attr('src')
+                        itemPrice = itemPrice.replace('$', "");
+                        itemPrice = Number(itemPrice);
+                        const itemWebsite = "poshmark";
+                        const itemCondition = 'New';
+                        ref.push({
+                            pLink: itemLink,
+                            pName: itemTitle,
+                            img: itemImg,
+                            pPrice: itemPrice,
+                            pCondition: itemCondition,
+                            pWebsite: itemWebsite
 
-        });
-    }
+                        });
+                    }
 
-    function geebo(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $(".list_items").children();
-            for (var i = 2; i < 40; i++) {
-
-
-                const itemImg = items.children().eq(i).children().eq(1).children().eq(0).children().attr('src');
-                const itemLink = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children().eq(0).attr('href');
-                const itemTitle = items.children().eq(i).children().eq(1).children().eq(1).children().eq(0).children('.title').text();
-                let itemPrice = items.children().eq(i).children().eq(1).children().eq(1).children('.price').text();
-
-                itemPrice = itemPrice.replace('$', "");
-                itemPrice = itemPrice.replace(',', "");
-                itemPrice = Number(itemPrice);
-                const itemWebsite = 'geebo';
-                const itemCondition = 'Used'
-                //console.log(itemPrice);
-                if (itemPrice != undefined && !isNaN(itemPrice) && itemImg != undefined && itemTitle != undefined && itemLink != undefined) {
-                    ref.push({
-                        pLink: itemLink,
-                        pName: itemTitle,
-                        img: itemImg,
-                        pPrice: itemPrice,
-                        pCondition: itemCondition,
-                        pWebsite: itemWebsite
-
-                    });
                 }
-            }
-        });
+
+            });
+
+        })();
+
+
     }
 
     function hnm(url) {
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        const result = fetch(`${proxyUrl + url}`).then(response => response.text());
-        result.then(body => {
-            const $ = cheerio.load(body);
-            const items = $(".page-content").children().eq(0).children().eq(1).children();
-            for (var i = 0; i < items.length; i++) {
-                const itemLink = 'https://www2.hm.com' + items.children().eq(i).children().eq(0).children().eq(0).attr('href');
-                const itemImg = 'http:' + items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('data-src');
-                const itemTitle = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('alt');
-                let itemPrice = items.children().eq(i).children().eq(1).children('.item-price').text();
-                itemPrice = itemPrice.replace(/\s+/g, "");
-                itemPrice = itemPrice.replace('$', "");
-                var n = itemPrice.indexOf('$');
-                itemPrice = itemPrice.substring(0, n != -1 ? n : itemPrice.length);
-                itemPrice = Number(itemPrice);
-                console.log(itemPrice)
-                const itemWebsite = 'hnm';
-                const itemCondition = 'New';
-                ref.push({
-                    pLink: itemLink,
-                    pName: itemTitle,
-                    img: itemImg,
-                    pPrice: itemPrice,
-                    pCondition: itemCondition,
-                    pWebsite: itemWebsite
+        (function () {
+            doCORSRequest({
+                method: this.id === 'post' ? 'POST' : 'GET',
+                url: url,
+            }, function printResult(result) {
+                const $ = cheerio.load(result);
+                const items = $(".page-content").children().eq(0).children().eq(1).children();
+                for (var i = 0; i < items.length; i++) {
+                    if (minPrice != 0 && maxPrice != 0) {
+                        let itemPrice = items.children().eq(i).children().eq(1).children('.item-price').text();
+                        itemPrice = itemPrice.replace(/\s+/g, "");
+                        itemPrice = itemPrice.replace('$', "");
+                        var n = itemPrice.indexOf('$');
+                        itemPrice = itemPrice.substring(0, n != -1 ? n : itemPrice.length);
+                        itemPrice = Number(itemPrice);
+                        if (itemPrice >= minPrice && itemPrice <= maxPrice) {
+                            const itemLink = 'https://www2.hm.com' + items.children().eq(i).children().eq(0).children().eq(0).attr('href');
+                            const itemImg = 'http:' + items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('data-src');
+                            const itemTitle = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('alt');
+                            const itemWebsite = 'hnm';
+                            const itemCondition = 'New';
+                            ref.push({
+                                pLink: itemLink,
+                                pName: itemTitle,
+                                img: itemImg,
+                                pPrice: itemPrice,
+                                pCondition: itemCondition,
+                                pWebsite: itemWebsite
 
-                });
-            }
-        });
+                            });
+                        }
+                    } else {
+                        const itemLink = 'https://www2.hm.com' + items.children().eq(i).children().eq(0).children().eq(0).attr('href');
+                        const itemImg = 'http:' + items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('data-src');
+                        const itemTitle = items.children().eq(i).children().eq(0).children().eq(0).children().eq(0).attr('alt');
+                        let itemPrice = items.children().eq(i).children().eq(1).children('.item-price').text();
+                        itemPrice = itemPrice.replace(/\s+/g, "");
+                        itemPrice = itemPrice.replace('$', "");
+                        var n = itemPrice.indexOf('$');
+                        itemPrice = itemPrice.substring(0, n != -1 ? n : itemPrice.length);
+                        itemPrice = Number(itemPrice);
+                        const itemWebsite = 'hnm';
+                        const itemCondition = 'New';
+                        ref.push({
+                            pLink: itemLink,
+                            pName: itemTitle,
+                            img: itemImg,
+                            pPrice: itemPrice,
+                            pCondition: itemCondition,
+                            pWebsite: itemWebsite
+
+                        });
+                    }
+                }
+
+            });
+
+        })();
     }
 
 
@@ -492,11 +701,11 @@ window.scrape = function () {
 
     let allitems = [];
     let result;
-    waitForIt(5000)
+    waitForIt(6000)
         .then(function () {
-            ref.on('value', gotData, errData);
+            ref.once('value', gotData, errData);
 
-        })
+        });
 
     function gotData(data) {
         result = data.val();
@@ -514,15 +723,32 @@ window.scrape = function () {
                 temp.push(result[k].pWebsite);
                 allitems.push(temp);
             }
-            for (let i = 0; i < allitems.length - 1; i++) {
-                for (let j = 0; j < (allitems.length - i) - 1; j++) {
-                    if (allitems[j][3] > allitems[j + 1][3]) {
-                        let temp = allitems[j];
-                        allitems[j] = allitems[j + 1];
-                        allitems[j + 1] = temp;
+
+            if (sort == 'decending') {
+                console.log('decend')
+                for (let i = 0; i < allitems.length - 1; i++) {
+                    for (let j = 0; j < (allitems.length - i) - 1; j++) {
+                        if (allitems[j][3] < allitems[j + 1][3]) {
+                            let temp = allitems[j];
+                            allitems[j] = allitems[j + 1];
+                            allitems[j + 1] = temp;
+                        }
+                    }
+                }
+            } else {
+                console.log('acend')
+                for (let i = 0; i < allitems.length - 1; i++) {
+                    for (let j = 0; j < (allitems.length - i) - 1; j++) {
+                        if (allitems[j][3] > allitems[j + 1][3]) {
+                            let temp = allitems[j];
+                            allitems[j] = allitems[j + 1];
+                            allitems[j + 1] = temp;
+                        }
                     }
                 }
             }
+
+
             let modifiedList = [];
             let finalList = '';
             for (let i = 0; i < allitems.length; i++) {
@@ -551,6 +777,16 @@ window.scrape = function () {
                 ref.onDisconnect();
             });
 
+        } else {
+            //the console is showing bt item is no creating...i guess styling would fix it... try it
+            /*console.log('no item');
+            let node = document.createElement("DIV");
+            node.id='no-result';
+            let textNode=document.createElement("P");
+            let text=document.createTextNode("Sorry! We could not find the item you are looking for 😔");
+            textNode.appendChild(text);
+            node.appendChild(textNode);*/
+            window.alert("Sorry! We could not find the item you are looking for 😔");
         }
 
 
@@ -561,5 +797,5 @@ window.scrape = function () {
     }
 
 
-}
+};
 

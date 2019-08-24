@@ -1,8 +1,8 @@
-exports.show= function(allresult, website) {
+exports.show= function(allresult) {
     let eachLine=allresult.split("\n");
 
 
-    function putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink) {
+    function putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink, pWebsite) {
         let node = document.createElement("DIV");
         node.className = "grid-item";
 
@@ -43,12 +43,12 @@ exports.show= function(allresult, website) {
         });
 
         let websiteImg= document.createElement("IMG");
-        switch (website) {
+        switch (pWebsite) {
             case 'ebay':
                 websiteImg.src="ebay-logo.png";
                 break;
-            case 'aliexpress':
-                websiteImg.src="aliexpress-logo.png";
+            case 'microcenter':
+                websiteImg.src="microcenter-logo.png";
                 break;
             case 'craigslist' :
                 websiteImg.src="craigslist-logo.png";
@@ -59,17 +59,11 @@ exports.show= function(allresult, website) {
             case 'hnm' :
                 websiteImg.src="hnm-logo.png";
                 break;
-            case 'geebo' :
-                websiteImg.src="geebo-logo.png";
-                break;
             case 'poshmark' :
                 websiteImg.src="poshmark-logo.png";
                 break;
             case 'tradesy' :
                 websiteImg.src="tradesy-logo.png";
-                break;
-        	case 'microcenter' :
-                websiteImg.src="microcenter-logo.png";
                 break;
         }
         //websiteImg.src="ebay-logo.png";
@@ -90,9 +84,10 @@ exports.show= function(allresult, website) {
             let pImg = productInfo[0];
             let pName = productInfo[1];
             let pCondition = productInfo[2];
-            let pPrice = productInfo[3];
+            let pPrice = '$' +productInfo[3];
             let pLink = productInfo[4];
-            putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink);
+            let pWebsite=productInfo[5];
+            putResultIntoGrid(index, pImg, pName, pCondition, pPrice, pLink, pWebsite);
         }
 
 
