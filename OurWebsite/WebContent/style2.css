@@ -168,3 +168,22 @@ footer{
   transform: scale(1.05);
   background-color: #00b386;
 }
+
+#load{
+  position: fixed;
+  z-index: 99;
+  top: 40%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#sort{
+  color: black;
+  margin-left: 10px;
+  font-size: 15px;
+
+}
