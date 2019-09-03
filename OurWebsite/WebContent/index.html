@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>eZSearch - Search multiple E-Commerce websites and get results in one Page!</title>
+<meta name="description" content="	This website allows users to search from a variety of E-commerce websites. This is an all in one website making searhing for used and new goods easier for the user. It frees the user form having the trouble of going to multiple sites to find listing for items they desire.">
+<meta name="keywords" content="Used items,new items,products,engine,search,lookup,
+buy,Sell,ebay,Sale,craiglist,tradesy,microcenter,walmart,shopping,poshmark,shopping,shop,ecommerce,online,oneclick,find,ez,ezsearch">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript">
+	var viewMode = getCookie("view-mode");
+	if(viewMode == "desktop"){
+		viewport.setAttribute('content', 'width=1024');
+	}else if (viewMode == "mobile"){
+		viewport.setAttribute('content', 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no');
+	}
+	</script>
+	<!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-146586591-1"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-146586591-1');
+</script>
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://use.typekit.net/omc5vhi.css">
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>-->
 	<title>eZSearch</title>
 	<div class="whitebox">
 		<header>
@@ -62,6 +84,7 @@
 </body>
 </div>
 <footer>
+	Contact us @ eZSearch19@gmail.com <br>
 	© Mohd Rokon / Touhid Nuhash
 </footer>
 </html>

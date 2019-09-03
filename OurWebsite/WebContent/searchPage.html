@@ -3,13 +3,31 @@
 <header>
 	<link rel="stylesheet" type="text/css" href="style2.css">
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript">
+	var viewMode = getCookie("view-mode");
+	if(viewMode == "desktop"){
+		viewport.setAttribute('content', 'width=1024');
+	}else if (viewMode == "mobile"){
+		viewport.setAttribute('content', 'width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no');
+	}
+	</script>
+
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-146586591-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-146586591-1');
+	</script>
 
 	<link rel="stylesheet" href="https://use.typekit.net/omc5vhi.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- Font awesome -->
-	<link rel="shortcut icon" type="image/ico" href="/images/favicon1.ico"/>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+	<link rel="shortcut icon" type="image/ico" href="/images/favicon.ico"/>
+	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>-->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="modifiedScraping.js"> </script>
@@ -79,7 +97,9 @@
 
 			<br><button id="refineButton" type="submit" onclick="refineSearch()">Refine Search</button>
 		</li>
-		<div class="cp" style="position: fixed; bottom:0%; color: white; margin-left: 20px; margin-bottom: 5px;">
+		<div class="cp" style="position: fixed; bottom:0%; color: grey; margin-left: 10px; margin-bottom: 5px;">
+			Contact us @
+			ezsearch19@gmail.com <br>
 			© Mohd Rokon / Touhid Nuhash
 		</div>
 		<script>

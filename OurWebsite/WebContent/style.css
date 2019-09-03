@@ -89,9 +89,8 @@ input[type=checkbox]
 
 footer{
 	position: fixed;
-	left: -10px;
 	bottom: 10px;
 	width: 100%;
-	color: black;
-	text-align: right;
+	color: grey;
+	text-align: center;
 }

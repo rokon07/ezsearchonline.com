@@ -793,7 +793,7 @@ window.scrape = function () {
             let text=document.createTextNode("Sorry! We could not find the item you are looking for 😔");
             textNode.appendChild(text);
             node.appendChild(textNode);*/
-            window.alert("Sorry! We could not find the item you are looking for 😔");
+            window.alert("Sorry! We could not find the item you are looking for 😔. * Try again as some queries may not show up on first load. Make sure desired sites are selected aswell.");
         }
 
 
@@ -805,4 +805,3 @@ window.scrape = function () {
 
 
 };
-
